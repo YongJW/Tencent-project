@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>我的任务页面-工程师</title>
+  <link rel="stylesheet" href="CSS/communal.css">
+  <link rel="stylesheet" href="CSS/my_task_enr.css">
+  <link rel="stylesheet" href="sweetalert/sweetalert.css">
+  <link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.css">
+  <script src="js/jquery-3.2.1.js"></script>
+  <script src="sweetalert/sweetalert-dev.min.js"></script>
+  <script src="bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+  <script src="js/my_task_enr.js"></script>
+</head>
+<body>
+<div class="main-div">
+  <div class="above">
+    <span class="txt">腾讯IT办公网新建项目</span>
+  </div>
+  <div class="below-div">
+    <div class="left choose-tasks">
+      <div class="job-navigation">任务导航</div>
+      <ul>
+        <li data-src="template-mytasks-enr-table/all_tasks_table.html" class="active">所有任务</li>
+        <li data-src="template-mytasks-enr-table/my_task_table.html">我的任务</li>
+        <li data-src="template-mytasks-enr-table/progress_task_table.html">进行中任务</li>
+        <li data-src="template-mytasks-enr-table/leave_task_table.html">闲置任务</li>
+        <li data-src="template-mytasks-enr-table/nostart_task_table.html">未启动任务</li>
+      </ul>
+    </div>
+    <div class="right iframe-div">
+      <iframe id="iframe-table" class="iframe-class" src="template-mytasks-enr-table/all_tasks_table.html"
+              frameborder="0" scrolling="auto" onload="onMyFrameLoad()"></iframe>
+    </div>
+  </div>
+</div>
+
+<div id="showLoadingImgModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">状态/文件更新</h4>
+      </div>
+      <div class="modal-body">
+        <form action="">
+          <div class="form-group">
+            状态更新：
+            <select id="updates_status" class="form-control">
+              <option value="1">进行中</option>
+              <option value="2">已完成</option>
+              <option value="3">闲置中</option>
+              <option value="4">未进行</option>
+            </select>
+          </div>
+          <div class="form-group">
+            文件更新：
+            <input type="file" id="InputFile">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
+        <button type="button" class="btn btn-primary"  onclick="TaskStatusUpdate()">确认</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div>
+</div>
+</body>
+</html>

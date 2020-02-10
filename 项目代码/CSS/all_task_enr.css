@@ -1,0 +1,42 @@
+
+.iframe-class{
+  width: 100%;
+  height: 100%;
+  /*background-color: chartreuse;*/
+}
+.left{
+  float: left;
+  width: 20%;
+  height: 100%;
+  /*background-color: cyan;*/
+}
+
+.right{
+  float: right;
+  width: 80%;
+  height: 100%;
+}
+
+
+/*任务导航栏*/
+.job-navigation{
+  margin-top: 15px;
+  margin-left: 40px;
+  padding: 5px;
+  border: 1px solid #e9e9e9;
+  text-align: center;
+}
+
+/*点击li*/
+.active{
+  background-color: #00a0e9;
+  color: #fff;
+}
+
+ul{
+  list-style: none;
+  line-height: 30px;
+}
+li{
+  padding-left: 30px;
+}

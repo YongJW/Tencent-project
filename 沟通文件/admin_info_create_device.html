@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+{% csrf_token %}
+<script src="{% static 'open_edit/js/jquery-1.10.2.js' %}"></script>
+<script src="{% static 'open_edit/js/jquery-migrate-1.0.0.js' %}"></script>
+<script src='{% static 'dialogment/dialog.js' %}'></script>
+<link rel = "stylesheet" type= "text/css" href = "/static/css/admin_new_info_comb.css">
+<head>
+    <meta charset="UTF-8" content="user-scalable=no">
+    <title>Title</title>
+</head>
+<body>
+    <div>
+        <font color="black">设备类型新建</font><br><br>
+        <input id = "dev_man" placeholder="设备厂商">
+        <br><br>
+        <input id = "dev_type" placeholder="设备类型">
+        <br><br>
+        <input id = "create_catename" placeholder="目录名">
+        <br><br>
+    </div>
+</body>
+</html>
+
+<script type="application/javascript">
+function admin_info_create_newmode_device(){
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}'}
+    });
+    var name = $('#create_catename').val();
+    var dev_man = $('#dev_man').val();
+    var dev_type = $('#dev_type').val();
+    if(name==""||dev_type==""||dev_man==""){
+        alert("提交失败，请将信息填写完毕！");
+    }
+    var formData = new FormData();
+    formData.append("name",name);
+    formData.append("dev_man",dev_man);
+    formData.append("dev_type",dev_type);
+   $.ajax({
+        type: "POST",
+        url: "{% url 'AdminInfoCreateDevice' %}",
+        data: formData,
+        cache: false,
+        processData : false,
+        contentType : false,
+
+        success: function(result) {
+             if(result.success == true){
+                 parent.admin_dia_quit_Device();
+                 alert(result.msg);
+             }
+             else {
+                 alert(result.msg);
+             }
+        },
+        error: function() {
+            alert("服务器连接异常");
+        }
+    });
+    return false;
+}
+</script>

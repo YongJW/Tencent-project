@@ -1,0 +1,60 @@
+{% extends 'index.html' %}
+{% load staticfiles %}
+{% csrf_token %}
+{% block custom_js %}
+    <script src="{% static 'open_edit/js/jquery-1.10.2.js' %}"></script>
+    <script src="{% static 'open_edit/js/jquery-migrate-1.0.0.js' %}"></script>
+{% endblock %}
+
+{% block custum_css %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel = "stylesheet" type="text/css" href = "/static/css/operation_recode_style.css">
+{% endblock %}
+
+
+{% block div_banner %}
+    <div id="out">
+        <div id="border_in"><br>
+            <table id="my_table">
+                <tr id="views_title">
+                    <td>#</td><td>标题</td><td>工具名称</td><td>版本号</td><td>状态</td><td>创建时间</td><td>结束时间</td><td>下载</td>
+                </tr>
+                {% for operation_recode in all_orgs.object_list %}
+                <tr id="views_value">
+                <td>{{ operation_recode.serial_number }}.</td><td>{{ operation_recode.title }}</td><td>{{ operation_recode.tool_name }}</td><td>{{ operation_recode.tool_version }}</td><td>{{ operation_recode.status }}</td><td>{{ operation_recode.start_time }}</td><td>{{ operation_recode.end_time }}</td><td>{% if operation_recode.status == "成功"  or operation_recode.status == "失败" %}<a href="{{ operation_recode.file }}" download="{{ operation_recode.title }}">文件下载</a>{% endif %}</td>
+                </tr>
+                {% endfor %}
+
+
+
+            </table><br>
+        </div>
+    {% load i18n %}
+        <div id="pagination">
+{#                <ul>#}
+                    {% if all_orgs.has_previous %}
+                        <a href="?{{ page_obj.previous_page_number.querystring }}" class="prev">&lsaquo;&lsaquo; {% trans "上一页" %}</a>
+                    {% else %}
+                        <span class="disabled prev">&lsaquo;&lsaquo; {% trans "上一页" %}</span>
+                    {% endif %}
+
+                    {% for page in all_orgs.pages %}
+                        {% if page %}
+                            {% ifequal page all_orgs.number %}
+                                <span class="current page">{{ page }}</span>
+                            {% else %}
+                                <a href="?{{ page.querystring }}" class="page">{{ page }}</a>
+                            {% endifequal %}
+                        {% else %}
+                            ...
+                        {% endif %}
+                    {% endfor %}
+                    {% if all_orgs.has_next %}
+                        <a href="?{{ all_orgs.next_page_number.querystring }}" class="next">{% trans "下一页" %} &rsaquo;&rsaquo;</a>
+                    {% else %}
+                        <span class="disabled next">{% trans "下一页" %} &rsaquo;&rsaquo;</span>
+                    {% endif %}
+            </div>
+    </div>
+
+{% endblock %}

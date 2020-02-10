@@ -1,0 +1,13 @@
+button {
+  cursor: pointer;
+}
+
+.submit-div {
+  text-align: right;
+}
+
+.submit-btn {
+  margin-right: 10%;
+  margin-bottom: 1%;
+}
+

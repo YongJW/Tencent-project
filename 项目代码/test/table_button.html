@@ -1,0 +1,37 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+  <title>newpage</title>
+</head>
+<body>
+<table border="1" width="100%">
+  <tr>
+    <td><input type=checkbox></td >
+    <td>11111</td  >
+  </tr>
+  <td><input type=checkbox></td>
+  <td>22222</td>
+  </tr>
+  <td><input type=checkbox></td>
+  <td>33333</td>
+  </tr>
+  <td><input type=checkbox></td>
+  <td>44444</td>
+  </tr>
+  <td><input type=checkbox></td>
+  <td>55555</td>
+  </tr>
+</table>
+<input type=button value="查看" onclick=getVal()>
+</body>
+<script>
+  function getVal(){
+    var table=document.getElementsByTagName("table")[0];
+    for(var i=0;i<table.rows.length;i++){
+      if(table.rows[i].cells[0].firstChild.checked){
+        alert("第"+(i+1)+"行已选中,值为:"+table.rows[i].cells[i].innerText);
+      }
+    }
+  }
+</script>
+</html>
