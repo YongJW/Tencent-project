@@ -5,7 +5,9 @@
   <title>项目经理导入</title>
   <link rel="stylesheet" href="CSS/communal.css">
   <link rel="stylesheet" href="CSS/manager-import.css">
+  <link rel="stylesheet" href="sweetalert/sweetalert.css">
   <script src="js/jquery-3.2.1.js"></script>
+  <script src="sweetalert/sweetalert-dev.min.js"></script>
   <script src="js/manager-import.js"></script>
 </head>
 <body>
@@ -56,16 +58,67 @@
         <td></td>
         <td></td>
         <td></td>
-        <td><button onclick="addLine()" >+</button></td>
+        <td>
+          <button id="addLineBtn">+</button>
+        </td>
         <td></td>
       </tr>
       </tbody>
     </table>
   </div>
   <div class="submit-div">
-    <button onclick="submitbtn()" class="submit-btn">暂存</button>
-    <button onclick="submitbtn()" class="submit-btn">提交</button>
+    <button id="TemporarySave" class="submit-btn">暂存</button>
+    <button id="submitBtn" class="submit-btn">提交</button>
   </div>
 </div>
+<script type="text/javascript">
+  //点击提交按钮
+  $("#submitBtn").click(function () {
+    var tableData = {};  //存储table中的数据
+    $("#dataTable tbody tr").each(function (trindex, tritem) {//遍历每一行 tr
+      //只获取非按钮行的数据
+      if ($(tritem).find("button").length == 0) {
+        tableData[trindex] = new Array();
+        $(tritem).find("input").each(function (tdindex, tditem) {//遍历当前行中的每一个input
+          if (tdindex < 5) {
+            tableData[trindex][tdindex] = $(tditem).val();//遍历每一个数据，并存入
+          } else //上传文件input
+          {
+            tableData[trindex][tdindex] = $(tditem)[0].files[0];//获取选中的文件
+          }
+        });
+      }
+    });
+    console.log(tableData);
+    $.ajax({
+      url: '/**/**',
+      type: 'POST',
+      data: tableData,
+      success: function () {
+        console.log('成功！！')
+      },
+      error: function (e) {
+        swal(
+          {
+            title: "提交失败",
+            text: "后台处理错误",
+            type: "error",
+            timer: 1500
+          })
+      }
+    })
+  });
+
+  //点击暂存按钮
+  $("#TemporarySave").click(function () {
+    swal(
+      {
+        title: "暂存成功",
+        text: "成功",
+        type: "success",
+        timer: 1500
+      })
+  });
+</script>
 </body>
 </html>
