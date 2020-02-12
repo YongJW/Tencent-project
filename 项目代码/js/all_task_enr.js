@@ -4,7 +4,7 @@ $(function () {
     //active 表示鼠标点击后的一个CSS类标签
     $(this).addClass("active");
     var url = $(this).attr("data-src");  //获取点击后切换的url
-    $("#iframe-table").attr("src", url)  //切换iframe的url
+    $("#iframe-table").attr("src", url);  //切换iframe的url
   });
 });
 
@@ -24,28 +24,4 @@ function updateBtn(taskStatus) {
   $("#InputFile").val("");  //将上传文件处清空
   //打开状态/文件更新窗口
   $("#showLoadingImgModel").modal('show');
-}
-
-
-//监听iframe :当iframe加载完毕后绑定两个按钮的点击事件
-//“参与任务”和“设置”两个按钮
-function onMyFrameLoad() {
-  $("#iframe-table").contents().find("table tr button").each(function (index, item) {
-    const taskText = $(this).parent().parent()[0].cells[0].innerText;
-    //获取隐藏域的id值
-    const hiddenText = $(this).parent().parent().find("input[type=hidden]").val();
-    if (index % 2 == 0) {
-      //每行第一个button
-      item.onclick = function () {
-        const userId = $("#userId").val();
-        return SwalConfirm(taskText, hiddenText, userId);
-      }
-    } else {
-      // 每行的第二个button
-      const taskStatus = $(this).parent().parent()[0].cells[1].innerText;  //当前状态值
-      item.onclick = function () {
-        return updateBtn(taskStatus);
-      }
-    }
-  })
 }
