@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <title>所有的任务页面-工程师</title>
-  <link rel="stylesheet" href="CSS/communal.css">
-  <link rel="stylesheet" href="CSS/all_task_enr.css">
-  <link rel="stylesheet" href="sweetalert/sweetalert.css">
-  <link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.css">
-  <script src="js/jquery-3.2.1.js"></script>
-  <script src="sweetalert/sweetalert-dev.min.js"></script>
-  <script src="bootstrap-3.3.7-dist/js/bootstrap.js"></script>
-  <script src="js/all_task_enr.js"></script>
+  <link rel="stylesheet" href="static/project_process/css/communal.css">
+  <link rel="stylesheet" href="static/project_process/css/all_task_enr.css">
+  <link rel="stylesheet" href="static/project_process/component/sweetalert/sweetalert.css">
+  <link rel="stylesheet" href="static/project_process/component/bootstrap-3.3.7-dist/css/bootstrap.css">
+  <script src="static/project_process/js/jquery-3.2.1.js"></script>
+  <script src="static/project_process/component/sweetalert/sweetalert-dev.min.js"></script>
+  <script src="static/project_process/component/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+  <script src="static/project_process/js/all_task_enr.js"></script>
 </head>
 <body>
 <input type="hidden" id="userId" value="null">
@@ -22,12 +22,18 @@
     <div class="left choose-tasks">
       <div class="job-navigation">任务导航</div>
       <ul>
-        <li data-src="template-alltasks-enr-table/all_tasks_table.html" class="active">所有任务</li>
-        <li data-src="template-alltasks-enr-table/my_task_table.html">我的任务</li>
+        <li data-src="static/project_process/component/template-alltasks-enr-table/all_tasks_table.html" class="active">
+          所有任务
+        </li>
+        <li data-src="static/project_process/component/template-alltasks-enr-table/my_task_table.html">我的任务</li>
+        <li data-src="static/project_process/component/template-alltasks-enr-table/progress_task_table.html">进行中任务</li>
+        <li data-src="static/project_process/component/template-alltasks-enr-table/leave_task_table.html">闲置任务</li>
+        <li data-src="static/project_process/component/template-alltasks-enr-table/nostart_task_table.html">未启动任务</li>
       </ul>
     </div>
     <div class="right iframe-div">
-      <iframe id="iframe-table" class="iframe-class" src="template-alltasks-enr-table/all_tasks_table.html"
+      <iframe id="iframe-table" class="iframe-class"
+              src="static/project_process/component/template-alltasks-enr-table/all_tasks_table.html"
               frameborder="0" scrolling="auto" onload="onMyFrameLoad()"></iframe>
     </div>
   </div>
@@ -47,6 +53,7 @@
       <div class="modal-body">
         <form action="">
           <div class="form-group">
+            <input type="hidden" value="" id="taskId">
             状态更新：
             <select id="updates_status" class="form-control">
               <option value="1">进行中</option>
@@ -76,10 +83,17 @@
   //监听iframe :当iframe加载完毕后绑定两个按钮的点击事件
   //“参与任务”和“设置”两个按钮
   function onMyFrameLoad() {
+    const currentChooseText = $(".active")[0].innerText;
+    let url = ""
+    if (currentChooseText == "所有任务") {
+      url = '/getTableData/all_tasks'
+    } else if (currentChooseText == "我的任务") {
+      url = '/getTableData/my_task'
+    }
     // iframe加载初始化的时候，请求数据填充表格
     $.ajax({
       type: "POST",
-      url: "/getTableData",
+      url: url,
       processData: true,
       dataType: "Json",
       success: function (response) {
@@ -92,62 +106,69 @@
           })
       },
       error: function (e) {
-        //封装的一个数据类
-        function trData(taskName, current_status, task_explain_file, enrs) {
-          this.taskName = taskName;
-          this.current_status = current_status;
-          this.task_explain_file = task_explain_file;
-          this.enrs = enrs
-        }
+        //通过forgeData产生伪造数据
+        let tableJsonData = forgeData()
 
-        //tableJsonData为伪造的json数据
-        var tableJsonData = {};
-        tableJsonData.userId = 18;
-        var tr1 = new trData("IP规划表检查", "已完成", "IP规划表检查.zip", "A、B");
-        var tr2 = new trData("确认配置模板", "进行中", "确认配置模板.zip", "A、B、C");
-        var tr3 = new trData("IP规划表检查", "闲置中", "IP规划表检查.zip", "A");
-        var tr4 = new trData("确认配置模板", "已完成", "确认配置模板.zip", "A、B");
-        tableJsonData.all_tasks_table_data = [tr1, tr2, tr3, tr4];
-        console.log(tableJsonData);
-        console.log(JSON.stringify(tableJsonData));
-        //1.给隐藏域的userId 赋值
-        console.log(tableJsonData.userId);
-        $("#userId").val(tableJsonData.userId);
-        console.log($("#userId").val());
+        if (currentChooseText == "我的任务") {
+          //循环遍历ajax请求到的tableJsonData填充表格
+          for (let i = 0; i < tableJsonData.all_tasks_table_data.length; i++) {
+            const index = i + 1;
+            const result = " <tr><td><input type=\"hidden\" value=" + tableJsonData.all_tasks_table_data[i].taskId + ">" + index + "." + tableJsonData.all_tasks_table_data[i].taskName + "</td>" +
+              "<td class=\"project-status\">" + tableJsonData.all_tasks_table_data[i].current_status + "</td>" +
+              "<td>" + tableJsonData.all_tasks_table_data[i].task_explain_file + "</td>" +
+              "<td>" + tableJsonData.all_tasks_table_data[i].enrs + "</td>" +
+              "<td><button>设置</button></td>" +
+              "</tr>";
+            $("#iframe-table").contents().find("table")[0].insertRow(i + 1).innerHTML = result;
+          }
 
-        //2.循环遍历ajax请求到的tableJsonData填充表格
-        for (let i = 0; i < tableJsonData.all_tasks_table_data.length; i++) {
-          const index = i + 1;
-          const result = " <tr><td>" + index + "." + tableJsonData.all_tasks_table_data[i].taskName + "</td>" +
-            "<td class=\"project-status\">" + tableJsonData.all_tasks_table_data[i].current_status + "</td>" +
-            "<td>" + tableJsonData.all_tasks_table_data[i].task_explain_file + "</td>" +
-            "<td>" + tableJsonData.all_tasks_table_data[i].enrs + "</td>" +
-            "<td><button>参与任务</button></td>" +
-            "<td><button>设置</button></td>" +
-            "</tr>";
-          $("#iframe-table").contents().find("table")[0].insertRow(i + 1).innerHTML = result;
-        }
-
-        //绑定“参与任务”、“设置”两个按钮的点击事件
-        $("#iframe-table").contents().find("table tr button")
-          .each(function (index, item) {
-            const taskText = $(this).parent().parent()[0].cells[0].innerText;
-            //获取隐藏域的id值
-            const hiddenText = $(this).parent().parent().find("input[type=hidden]").val();
-            if (index % 2 == 0) {
-              //每行第一个button
-              item.onclick = function () {
-                const userId = $("#userId").val();
-                return SwalConfirm(taskText, hiddenText, userId);
-              }
-            } else {
-              // 每行的第二个button
+          //绑定“设置”按钮的点击事件
+          $("#iframe-table").contents().find("table tr button")
+            .each(function (index, item) {
+              const taskText = $(this).parent().parent()[0].cells[0].innerText;
+              //获取隐藏域的id值
+              const hiddenText = $(this).parent().parent().find("input[type=hidden]").val();
+              // 每行的设置按钮
               const taskStatus = $(this).parent().parent()[0].cells[1].innerText;  //当前状态值
               item.onclick = function () {
-                return updateBtn(taskStatus);
+                return updateBtn(taskStatus, hiddenText);
               }
-            }
-          })
+            })
+        } else {
+          //循环遍历ajax请求到的tableJsonData填充表格
+          for (let i = 0; i < tableJsonData.all_tasks_table_data.length; i++) {
+            const index = i + 1;
+            const result = " <tr><td><input type=\"hidden\" value=" + tableJsonData.all_tasks_table_data[i].taskId + ">" + index + "." + tableJsonData.all_tasks_table_data[i].taskName + "</td>" +
+              "<td class=\"project-status\">" + tableJsonData.all_tasks_table_data[i].current_status + "</td>" +
+              "<td>" + tableJsonData.all_tasks_table_data[i].task_explain_file + "</td>" +
+              "<td>" + tableJsonData.all_tasks_table_data[i].enrs + "</td>" +
+              "<td><button>参与任务</button></td>" +
+              "<td><button>设置</button></td>" +
+              "</tr>";
+            $("#iframe-table").contents().find("table")[0].insertRow(i + 1).innerHTML = result;
+          }
+
+          //绑定“参与任务”、“设置”两个按钮的点击事件
+          $("#iframe-table").contents().find("table tr button")
+            .each(function (index, item) {
+              const taskText = $(this).parent().parent()[0].cells[0].innerText;
+              //获取隐藏域的id值
+              const hiddenText = $(this).parent().parent().find("input[type=hidden]").val();
+              if (index % 2 == 0) {
+                //每行第一个button
+                item.onclick = function () {
+                  const userId = $("#userId").val();
+                  return SwalConfirm(taskText, hiddenText, userId);
+                }
+              } else {
+                // 每行的第二个button
+                const taskStatus = $(this).parent().parent()[0].cells[1].innerText;  //当前状态值
+                item.onclick = function () {
+                  return updateBtn(taskStatus, hiddenText);
+                }
+              }
+            })
+        }
       }
     });
     //绑定“参与任务”、“设置”两个按钮的点击事件
@@ -182,11 +203,14 @@
     const selectVal = $("#updates_status").val();
     //上传的文件
     const fileUpload = $("#InputFile")[0].files[0];
+    //获取隐藏域的id值
+    const hiddenTaskId = $("#taskId").val();
     const userId = $("#userId").val();
     const formData = new FormData();
     formData.append("selectVal", selectVal);
     formData.append("file", fileUpload);
     formData.append("userId", userId);
+    formData.append("taskId", hiddenTaskId);
     // formData中的数据说明
     // parameter1.selectVal表示选择的文件状态值
     // 1代表：进行中
@@ -195,12 +219,10 @@
     // 4代表：未进行
     // parameter2.file表示上传的文件
     // parameter3.userId表示用户id
-    console.log(formData.get("selectVal"));
-    console.log(formData.get("file"));
-    console.log(formData.get("userId"));
+    // parameter4.taskId表示当前任务Id
     $.ajax({
       type: "POST",
-      url: "/xxxxxxxx",
+      url: "/updateState",
       data: formData,
       processData: false,
       dataType: "Json",
@@ -221,7 +243,7 @@
             type: "error",
             timer: 1500
           })
-      }
+      } 
     })
     $("#showLoadingImgModel").modal('hide');
   });
@@ -248,12 +270,10 @@
         //formData中的数据说明
         //parameter1:taskId表示参与任务ID
         //parameter2:userId表示当前登录用户
-        console.log("任务id:" + formData.get("taskId"));
-        console.log("用户id:" + formData.get("userId"));
         if (isConfirm) {
           $.ajax({
             type: "POST",
-            url: "/xxxxx/xxx",
+            url: "/joinTask",
             processData: false,
             data: formData,
             dataType: "Json",

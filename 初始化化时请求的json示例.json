@@ -1,0 +1,28 @@
+{
+	"userId": 18,
+	"all_tasks_table_data": [{
+		"taskId": 1,
+		"taskName": "IP规划表检查",
+		"current_status": "已完成",
+		"task_explain_file": "IP规划表检查.zip",
+		"enrs": "A、B"
+	}, {
+		"taskId": 2,
+		"taskName": "确认配置模板",
+		"current_status": "进行中",
+		"task_explain_file": "确认配置模板.zip",
+		"enrs": "A、B、C"
+	}, {
+		"taskId": 3,
+		"taskName": "IP规划表检查",
+		"current_status": "闲置中",
+		"task_explain_file": "IP规划表检查.zip",
+		"enrs": "A"
+	}, {
+		"taskId": 4,
+		"taskName": "确认配置模板",
+		"current_status": "已完成",
+		"task_explain_file": "确认配置模板.zip",
+		"enrs": "A、B"
+	}]
+}

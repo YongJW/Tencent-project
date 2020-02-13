@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a4686c18-52bd-494a-b839-562367cda57d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../~$新建网项目管理全流程开发前端接口说明.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../初始化化时请求的json示例.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../腾讯新建网项目管理全流程开发前端接口说明.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../腾讯项目流程20200213.rp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/项目代码.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/static.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/css/bootstrap-theme.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/css/bootstrap-theme.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/css/bootstrap.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/css/bootstrap.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/css/bootstrap.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/css/bootstrap.min.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/js/bootstrap.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/js/bootstrap.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/bootstrap-3.3.7-dist/js/npm.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/sweetalert/sweetalert-dev.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/sweetalert/sweetalert.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/template-alltasks-enr-table/all_tasks_table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/template-alltasks-enr-table/my_task_table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/template-mytasks-enr-table/all_tasks_table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/template-mytasks-enr-table/leave_task_table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/template-mytasks-enr-table/my_task_table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/template-mytasks-enr-table/nostart_task_table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/component/template-mytasks-enr-table/progress_task_table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/css/all_task_enr.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/css/communal.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/css/manager-import.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/css/my_task_enr.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/js/all_task_enr.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/js/jquery-3.2.1.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/js/manager-import.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_process/js/my_task_enr.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../腾讯新建网项目管理全流程开发前端.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../沟通文件/admin_info_create_device.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../沟通文件/operation_recode.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../沟通文件/自动化工具平台.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../沟通文件/自动化工具平台123.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../腾讯20200109.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../腾讯新建网项目管理全流程开发.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CSS/all_task_enr.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CSS/communal.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CSS/manager-import.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CSS/my_task_enr.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../all_task_enr.html" beforeDir="false" afterPath="$PROJECT_DIR$/../all_task_enr.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../api-server-demo/db.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../api-server-demo/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../api-server-demo/test.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/css/bootstrap-theme.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/css/bootstrap-theme.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/css/bootstrap-theme.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/css/bootstrap-theme.min.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/css/bootstrap.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/css/bootstrap.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/css/bootstrap.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/css/bootstrap.min.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/js/bootstrap.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/js/bootstrap.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap-3.3.7-dist/js/npm.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../js/all_task_enr.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../js/jquery-3.2.1.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../js/manager-import.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../js/my_task_enr.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../manager-import.html" beforeDir="false" afterPath="$PROJECT_DIR$/../manager-import.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../my-projects.html" beforeDir="false" afterPath="$PROJECT_DIR$/../my-projects.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../my_task_enr.html" beforeDir="false" afterPath="$PROJECT_DIR$/../my_task_enr.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../my_task_man.html" beforeDir="false" afterPath="$PROJECT_DIR$/../my_task_man.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sweetalert/sweetalert-dev.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sweetalert/sweetalert.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template-alltasks-enr-table/all_tasks_table.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template-alltasks-enr-table/my_task_table.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template-mytasks-enr-table/all_tasks_table.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template-mytasks-enr-table/leave_task_table.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template-mytasks-enr-table/my_task_table.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template-mytasks-enr-table/nostart_task_table.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template-mytasks-enr-table/progress_task_table.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../test/table_button.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../test/test-li.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../test/test.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../~$新建网项目管理全流程开发前端接口说明.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../初始化化时请求的json示例.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../腾讯新建网项目管理全流程开发前端接口说明.docx" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectId" id="1Xk2rsKzfhXTWQ25xJ32BBj2e9S" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a4686c18-52bd-494a-b839-562367cda57d" name="Default Changelist" comment="" />
+      <created>1581575973649</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1581575973649</updated>
+      <workItem from="1581575975210" duration="17000" />
+      <workItem from="1581576205414" duration="286000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+</project>
