@@ -3,7 +3,6 @@ html{
 }
 body{
   height: 100%;
-  cursor: pointer;
 }
 
 /*上部分div*/
@@ -66,9 +65,9 @@ input{
 
 .main-div {
   border: 1px solid #e2e2e2;
-  margin-left: 12.154%;
+  margin-left: 13.54%;
   margin-top: 3.076%;
-  margin-right: 15.53%;
+  margin-right: 16.53%;
   height: 66.08%;
 }
 
@@ -88,5 +87,12 @@ table span{
 
 .project-status {
   color: red;
+}
+
+ button{
+  cursor: pointer;
+}
+.choose-tasks li{
+  cursor: pointer;
 }
 

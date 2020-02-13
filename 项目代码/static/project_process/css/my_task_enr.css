@@ -34,11 +34,10 @@
   color: #fff;
 }
 
-ul {
+.choose-tasks ul{
   list-style: none;
   line-height: 30px;
 }
-
-li {
+.choose-tasks li{
   padding-left: 30px;
 }

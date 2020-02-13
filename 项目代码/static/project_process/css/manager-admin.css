@@ -1,17 +1,18 @@
 
-.iframe-class{
+.iframe-class {
   width: 100%;
   height: 100%;
   /*background-color: chartreuse;*/
 }
-.left{
+
+.left {
   float: left;
   width: 20%;
   height: 100%;
   /*background-color: cyan;*/
 }
 
-.right{
+.right {
   float: right;
   width: 80%;
   height: 100%;
@@ -19,7 +20,7 @@
 
 
 /*任务导航栏*/
-.job-navigation{
+.job-navigation {
   margin-top: 15px;
   margin-left: 40px;
   padding: 5px;
@@ -28,7 +29,7 @@
 }
 
 /*点击li*/
-.active{
+.active {
   background-color: #00a0e9;
   color: #fff;
 }
@@ -40,3 +41,15 @@
 .choose-tasks li{
   padding-left: 30px;
 }
+
+.manager-admin-file-update{
+  display:inline;
+}
+
+.manager-admin-input-file{
+  width: 70%;
+  margin-bottom: 2px;
+  display:inline;
+}
+
+/*style="width:70%;margin-bottom:2px;display:inline"*/

@@ -8,23 +8,16 @@ $(function () {
   });
 });
 
-
 //绑定"状态/文件更新"按钮点击事件  打开窗口
-function updateBtn(taskStatus, hiddenText) {
-  $("#taskId").val(hiddenText);
-  if (taskStatus == "进行中") {
-    $("#updates_status").val(1);
-  } else if (taskStatus == "已完成") {
-    $("#updates_status").val(2);
-  } else if (taskStatus == "闲置中") {
-    $("#updates_status").val(3);
-  } else if (taskStatus == "未进行") {
-    $("#updates_status").val(4);
-  }
-  $("#InputFile").val("");  //将上传文件处清空
+function openAuditing(taskId, const_userId) {
+  //设置更新人员
+ $("#updataUserName").html(const_userId);
+   $("#InputFile").val("");  //将上传文件处清空
   //打开状态/文件更新窗口
-  $("#showLoadingImgModel").modal('show');
+  $("#showCheckModel").modal('show');
+  $("#taskId").val(taskId);
 }
+
 
 //产生伪造数据
 function forgeData() {
@@ -39,7 +32,7 @@ function forgeData() {
 
 //tableJsonData为伪造的json数据
   let tableJsonData = {};
-  tableJsonData.userId = "嘉华";
+  tableJsonData.userId = "张华";
   var tr1 = new trData(1, "IP规划表检查", "已完成", "IP规划表检查.zip", "A、B");
   var tr2 = new trData(2, "确认配置模板", "进行中", "确认配置模板.zip", "A、B、C");
   var tr3 = new trData(3, "IP规划表检查", "闲置中", "IP规划表检查.zip", "A");
@@ -57,7 +50,6 @@ function forgeData() {
   console.log(JSON.stringify(tableJsonData));
   //1.给隐藏域的userId 赋值
   console.log(tableJsonData.userId);
-
 
   return tableJsonData
 }

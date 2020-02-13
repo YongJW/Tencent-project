@@ -56,8 +56,7 @@ function forgeData() {
   console.log(JSON.stringify(tableJsonData));
   //1.给隐藏域的userId 赋值
   console.log(tableJsonData.userId);
-  $("#userId").val(tableJsonData.userId);
-  console.log("userId" + $("#userId").val());
+
   //返回伪造数据
   return tableJsonData
 }

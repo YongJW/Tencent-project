@@ -75,6 +75,7 @@
     </div>
   </div>
 </div>
+
 <script type="text/javascript">
   $(function () {
 
@@ -89,6 +90,12 @@
       url = '/getTableData/all_tasks'
     } else if (currentChooseText == "我的任务") {
       url = '/getTableData/my_task'
+    } else if (currentChooseText == "进行中任务") {
+      url = '/getTableData/progress_task'
+    } else if (currentChooseText == "闲置任务") {
+      url = '/getTableData/leave_task'
+    } else if (currentChooseText == "未启动任务") {
+      url = '/getTableData/nostart_task'
     }
     // iframe加载初始化的时候，请求数据填充表格
     $.ajax({
@@ -108,6 +115,8 @@
       error: function (e) {
         //通过forgeData产生伪造数据
         let tableJsonData = forgeData()
+        $("#userId").val(tableJsonData.userId);
+        console.log("userId" + $("#userId").val());
 
         if (currentChooseText == "我的任务") {
           //循环遍历ajax请求到的tableJsonData填充表格
@@ -171,26 +180,6 @@
         }
       }
     });
-    //绑定“参与任务”、“设置”两个按钮的点击事件
-    $("#iframe-table").contents().find("table tr button")
-      .each(function (index, item) {
-        const taskText = $(this).parent().parent()[0].cells[0].innerText;
-        //获取隐藏域的id值
-        const hiddenText = $(this).parent().parent().find("input[type=hidden]").val();
-        if (index % 2 == 0) {
-          //每行第一个button
-          item.onclick = function () {
-            const userId = $("#userId").val();
-            return SwalConfirm(taskText, hiddenText, userId);
-          }
-        } else {
-          // 每行的第二个button
-          const taskStatus = $(this).parent().parent()[0].cells[1].innerText;  //当前状态值
-          item.onclick = function () {
-            return updateBtn(taskStatus);
-          }
-        }
-      })
   }
 
   // 状态/文件更新窗口 确认按钮
@@ -243,7 +232,7 @@
             type: "error",
             timer: 1500
           })
-      } 
+      }
     })
     $("#showLoadingImgModel").modal('hide');
   });
@@ -263,7 +252,6 @@
         closeOnCancel: false
       },
       function (isConfirm) {
-        //hiddenText 是隐藏域id，应该将该id传递至后台
         const formData = new FormData();
         formData.append("taskId", hiddenText);
         formData.append("userId", userId);

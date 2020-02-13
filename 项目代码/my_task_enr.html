@@ -115,6 +115,8 @@
       error: function (e) {
         //通过forgeData产生伪造数据
         let tableJsonData = forgeData()
+        $("#userId").val(tableJsonData.userId);
+        console.log("userId" + $("#userId").val());
 
         if (currentChooseText == "我的任务") {
           //循环遍历ajax请求到的tableJsonData填充表格
@@ -178,18 +180,6 @@
         }
       }
     });
-    // //绑定“设置”按钮的点击事件
-    // $("#iframe-table").contents().find("table tr button")
-    //   .each(function (index, item) {
-    //     const taskText = $(this).parent().parent()[0].cells[0].innerText;
-    //     //获取隐藏域的id值
-    //     const hiddenText = $(this).parent().parent().find("input[type=hidden]").val();
-    //     // 每行的设置按钮
-    //     const taskStatus = $(this).parent().parent()[0].cells[1].innerText;  //当前状态值
-    //     item.onclick = function () {
-    //       return updateBtn(taskStatus, hiddenText);
-    //     }
-    //   })
   }
 
   // 状态/文件更新窗口 确认按钮

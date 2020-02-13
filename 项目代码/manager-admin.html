@@ -2,9 +2,267 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>项目经理-管理页</title>
+  <link rel="stylesheet" href="static/project_process/css/communal.css">
+  <link rel="stylesheet" href="static/project_process/css/manager-admin.css">
+  <link rel="stylesheet" href="static/project_process/component/sweetalert/sweetalert.css">
+  <link rel="stylesheet" href="static/project_process/component/bootstrap-3.3.7-dist/css/bootstrap.css">
+  <script src="static/project_process/js/jquery-3.2.1.js"></script>
+  <script src="static/project_process/component/sweetalert/sweetalert-dev.min.js"></script>
+  <script src="static/project_process/component/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+  <script src="static/project_process/js/manager-admin.js"></script>
 </head>
 <body>
+<input type="hidden" id="userId" value="null">
+<div class="main-div">
+  <div class="above">
+    <span class="txt">腾讯IT办公网新建项目</span>
+  </div>
+  <div class="below-div">
+    <div class="left choose-tasks">
+      <div class="job-navigation">任务导航</div>
+      <ul>
+        <li data-src="static/project_process/component/template-manager-admin-table/admin_table.html" class="active">
+          管理项目
+        </li>
+        <li data-src="static/project_process/component/template-manager-admin-table/new_add_project.html">新建项目</li>
+      </ul>
+    </div>
+    <div class="right iframe-div">
+      <iframe id="iframe-table" class="iframe-class"
+              src="static/project_process/component/template-manager-admin-table/admin_table.html"
+              frameborder="0" scrolling="auto" onload="onMyFrameLoad()"></iframe>
+    </div>
+  </div>
+</div>
 
+
+<!--点击设置按钮展示“状态/文件更新”弹出窗口-->
+<div id="showCheckModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" align="center">文件审核</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <input type="hidden" value="" id="taskId">
+          <lable>更新人员：</lable>
+          <span id="updataUserName">未知</span><br>
+        </div>
+        <div class="form-group manager-admin-file-update">
+          <lable>文件更新：</lable>
+          <input type="file" id="InputFile" class="manager-admin-input-file" style="display:inline"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-primary" id="PassConfirmBtn">&nbsp;通过&nbsp;</button>
+        <button type="button" class="btn btn-primary" id="noPassConfirmBtn">不通过</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">&nbsp;退出&nbsp;</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  $(function () {
+
+  });
+
+  //监听iframe :当iframe加载完毕后绑定两个按钮的点击事件
+  //“参与任务”和“设置”两个按钮
+  function onMyFrameLoad() {
+    const currentChooseText = $(".active")[0].innerText;
+    //不同的页面请求不同的数据
+    let url = "";
+    if (currentChooseText == "管理项目") {
+      url = '/getTableData/adminProject'
+    } else if (currentChooseText == "新建项目") {
+      url = '/getTableData/addProject'
+    }
+    // iframe加载初始化的时候，请求数据填充表格
+    $.ajax({
+      type: "POST",
+      url: url,
+      processData: true,
+      dataType: "Json",
+      success: function (response) {
+        swal(
+          {
+            title: "更新成功",
+            text: "成功",
+            type: "success",
+            timer: 1500
+          })
+      },
+      error: function (e) {
+        //通过forgeData产生伪造数据
+        let tableJsonData = forgeData()
+        $("#userId").val(tableJsonData.userId);
+        console.log("userId" + $("#userId").val());
+
+        if (currentChooseText == "管理项目") {
+          //循环遍历ajax请求到的tableJsonData填充表格
+          for (let i = 0; i < tableJsonData.all_tasks_table_data.length; i++) {
+            const index = i + 1;
+            const result = " <tr><td><input type=\"hidden\" value=" + tableJsonData.all_tasks_table_data[i].taskId + ">" + index + "." + tableJsonData.all_tasks_table_data[i].taskName + "</td>" +
+              "<td class=\"project-status\">" + tableJsonData.all_tasks_table_data[i].current_status + "</td>" +
+              "<td>" + tableJsonData.all_tasks_table_data[i].task_explain_file + "</td>" +
+              "<td>" + tableJsonData.all_tasks_table_data[i].enrs + "</td>" +
+              "<td><button>审核</button></td>" +
+              "<td><button>变更</button></td>" +
+              "</tr>";
+            $("#iframe-table").contents().find("table")[0].insertRow(i + 1).innerHTML = result;
+          }
+
+          //绑定“审核”、“变更”两个按钮的点击事件
+          $("#iframe-table").contents().find("table tr button")
+            .each(function (index, item) {
+              const taskText = $(this).parent().parent()[0].cells[0].innerText;
+              //获取隐藏域的id值
+              const taskId = $(this).parent().parent().find("input[type=hidden]").val();
+              if (index % 2 == 0) {
+                //每行第一个button 审核
+                item.onclick = function () {
+                  const const_userId = $("#userId").val();
+                  console.log("userId+taskId:" + const_userId + taskId)
+                  return openAuditing(taskId, const_userId);
+                }
+              } else {
+                // 每行的第二个button 变更
+                const taskStatus = $(this).parent().parent()[0].cells[1].innerText;  //当前状态值
+                item.onclick = function () {
+                  return updateBtn(taskStatus, hiddenText);
+                }
+              }
+            })
+        } else {
+          //循环遍历ajax请求到的tableJsonData填充表格
+          for (let i = 0; i < tableJsonData.all_tasks_table_data.length; i++) {
+            const index = i + 1;
+            const result = " <tr><td><input type=\"hidden\" value=" + tableJsonData.all_tasks_table_data[i].taskId + ">" + index + "." + tableJsonData.all_tasks_table_data[i].taskName + "</td>" +
+              "<td class=\"project-status\">" + tableJsonData.all_tasks_table_data[i].current_status + "</td>" +
+              "<td>" + tableJsonData.all_tasks_table_data[i].task_explain_file + "</td>" +
+              "<td>" + tableJsonData.all_tasks_table_data[i].enrs + "</td>" +
+              "<td><button>参与任务</button></td>" +
+              "<td><button>设置</button></td>" +
+              "</tr>";
+            $("#iframe-table").contents().find("table")[0].insertRow(i + 1).innerHTML = result;
+          }
+
+          //绑定“参与任务”、“设置”两个按钮的点击事件
+          $("#iframe-table").contents().find("table tr button")
+            .each(function (index, item) {
+              const taskText = $(this).parent().parent()[0].cells[0].innerText;
+              //获取隐藏域的id值
+              const hiddenText = $(this).parent().parent().find("input[type=hidden]").val();
+              if (index % 2 == 0) {
+                //每行第一个button
+                item.onclick = function () {
+                  const userId = $("#userId").val();
+                  return SwalConfirm(taskText, hiddenText, userId);
+                }
+              } else {
+                // 每行的第二个button
+                const taskStatus = $(this).parent().parent()[0].cells[1].innerText;  //当前状态值
+                item.onclick = function () {
+                  return updateBtn(taskStatus, hiddenText);
+                }
+              }
+            })
+        }
+      }
+    });
+  }
+
+  //审核通过按钮
+  $("#PassConfirmBtn").click(function () {
+    //用户信息
+    const userid = $("#userId").val();
+    //任务task信息
+    const taskid = $("#taskId").val();
+    //文件
+    const updateFile = $("#InputFile")[0].files[0];
+
+    let formData = new FormData();
+    formData.append("userid",userid);
+    formData.append("taskid",taskid);
+    formData.append("updateFile",updateFile);
+
+    $.ajax({
+      type: "POST",
+      url: "/managerAdmin/pass",
+      data: formData,
+      processData: false,
+      dataType: "Json",
+      success: function (response) {
+        swal(
+          {
+            title: "审核成功通过",
+            text: "成功",
+            type: "success",
+            timer: 1500
+          })
+      },
+      error: function (e) {
+        swal(
+          {
+            title: "审核通过失败",
+            text: "后台处理错误",
+            type: "error",
+            timer: 1500
+          })
+      }
+    })
+    //隐藏窗口
+    $("#showCheckModel").modal('hide');
+  });
+
+  //审核不通过
+  $("#noPassConfirmBtn").click(function () {
+    //用户信息
+    const userid = $("#userId").val();
+    //任务task信息
+    const taskid = $("#taskId").val();
+    //文件
+    const updateFile = $("#InputFile")[0].files[0];
+
+    let formData = new FormData();
+    formData.append("userid",userid);
+    formData.append("taskid",taskid);
+    formData.append("updateFile",updateFile);
+
+    $.ajax({
+      type: "POST",
+      url: "/managerAdmin/notPass",
+      data: formData,
+      processData: false,
+      dataType: "Json",
+      success: function (response) {
+        swal(
+          {
+            title: "审核不成功通过",
+            text: "成功",
+            type: "success",
+            timer: 1500
+          })
+      },
+      error: function (e) {
+        swal(
+          {
+            title: "审核不通过失败",
+            text: "后台处理错误",
+            type: "error",
+            timer: 1500
+          })
+      }
+    })
+    //隐藏窗口
+    $("#showCheckModel").modal('hide');
+  });
+</script>
 </body>
 </html>
