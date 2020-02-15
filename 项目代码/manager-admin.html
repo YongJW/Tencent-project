@@ -4,13 +4,17 @@
   <meta charset="UTF-8">
   <title>项目经理-管理页</title>
   <link rel="stylesheet" href="static/project_process/css/communal.css">
-  <link rel="stylesheet" href="static/project_process/css/manager-admin.css">
   <link rel="stylesheet" href="static/project_process/component/sweetalert/sweetalert.css">
+  <link rel="stylesheet" href="static/project_process/component/pagination/pagination.css">
   <link rel="stylesheet" href="static/project_process/component/bootstrap-3.3.7-dist/css/bootstrap.css">
+  <link rel="stylesheet" href="static/project_process/css/manager-admin.css">
+
   <script src="static/project_process/js/jquery-3.2.1.js"></script>
   <script src="static/project_process/component/sweetalert/sweetalert-dev.min.js"></script>
   <script src="static/project_process/component/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+  <script src="static/project_process/component/pagination/jquery.pagination.js"></script>
   <script src="static/project_process/js/manager-admin.js"></script>
+
 </head>
 <body>
 <input type="hidden" id="userId" value="null">
@@ -22,22 +26,24 @@
     <div class="left choose-tasks">
       <div class="job-navigation">任务导航</div>
       <ul>
-        <li data-src="static/project_process/component/template-manager-admin-table/admin_table.html" class="active">
+        <li data-src="static/project_process/component/template-manager-admin-table/admin_table.html">
           管理项目
         </li>
-        <li data-src="static/project_process/component/template-manager-admin-table/new_add_project.html">新建项目</li>
+        <li data-src="static/project_process/component/template-manager-admin-table/new_add_project.html"
+            class="active">新建项目
+        </li>
       </ul>
     </div>
     <div class="right iframe-div">
       <iframe id="iframe-table" class="iframe-class"
-              src="static/project_process/component/template-manager-admin-table/admin_table.html"
+              src="static/project_process/component/template-manager-admin-table/new_add_project.html"
               frameborder="0" scrolling="auto" onload="onMyFrameLoad()"></iframe>
     </div>
   </div>
 </div>
 
 
-<!--点击设置按钮展示“状态/文件更新”弹出窗口-->
+<!--点击“审核”按钮弹出窗口-->
 <div id="showCheckModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog"
      aria-labelledby="mySmallModalLabel">
   <div class="modal-dialog modal-sm" role="document">
@@ -58,18 +64,118 @@
           <input type="file" id="InputFile" class="manager-admin-input-file" style="display:inline"/>
         </div>
       </div>
-      <div class="modal-footer">
-
+      <div class=" div-buttons modal-footer ">
         <button type="button" class="btn btn-primary" id="PassConfirmBtn">&nbsp;通过&nbsp;</button>
         <button type="button" class="btn btn-primary" id="noPassConfirmBtn">不通过</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">&nbsp;退出&nbsp;</button>
+        <button type="button" class="btn btn-primary  " data-dismiss="modal">&nbsp;退出&nbsp;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--点击“选择人员”按钮弹出窗口-->
+<div id="selectMemberModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" align="center">选择项目人员</h4>
+      </div>
+      <div class="modal-body" id="SearchMeberModal">
+        <input type="text" placeholder="输入搜索项目人员名字" class="form-control" id="SearchMemberText">
+        <table class="table  table-hover SearchMeberTable" id="SearchMemberTable" style="display: none">
+          <thead>
+          <tr>
+            <th>姓名</th>
+            <th>是否选中</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+        <div class="M-box m-style" id="M-box-div"></div>
+      </div>
+      <div class=" div-buttons modal-footer ">
+        <!--        <button type="button" class="btn btn-primary" id="PassConfirmBtn">&nbsp;通过&nbsp;</button>-->
+        <!--        <button type="button" class="btn btn-primary" id="noPassConfirmBtn">不通过</button>-->
+        <button type="button" class="btn btn-primary  " data-dismiss="modal">&nbsp;关闭&nbsp;</button>
       </div>
     </div>
   </div>
 </div>
 <script type="text/javascript">
   $(function () {
+    $("#SearchMemberText").on("input", function () {
 
+      //获取搜索的关键字
+      const searchText = $("#SearchMemberText").val();
+      const formData = new FormData();
+      formData.append("keyWord", searchText);
+      $.ajax({
+        type: "POST",
+        url: "getMemberByKey",
+        data: formData,
+        processData: false,
+        dataType: "Json",
+        success: function (response) {
+          swal(
+            {
+              title: "更新成功",
+              text: "成功",
+              type: "success",
+              timer: 1500
+            })
+        },
+        error: function (e) {
+          const usersInfo = forgeMemberData();
+          const pageCount = 4; //每页显示的条数
+          $("#SearchMemberTable tbody").html("");
+          console.log(usersInfo);
+          //显示第一页
+          for (let i = 0; i < 1 * pageCount; i++) {
+            let addtr = "<tr><td>";
+            addtr += usersInfo.users[i].userName;
+            addtr += "<input type=\"hidden\" value=";
+            addtr += usersInfo.users[i].userid;
+            addtr += "></td><td><input type=\"checkbox\"/></td></tr>";
+            $("#SearchMemberTable tbody").append(addtr);
+          }
+          //显示结果table
+          $('#SearchMemberTable').css('display', "");
+
+
+          $('#M-box-div').pagination({
+            mode: 'fixed',  //fixed固定数量模式
+            totalData: usersInfo.users.length,  //数据总条数
+            pageCount: Math.round(usersInfo.users.length / pageCount),  //总页数
+            isHide: true,  //总页数为0或1时隐藏分页控件
+            callback: function (api) {
+              $("#SearchMemberTable  input:checkbox").each(function (index, item) {
+                if ($(this)[0].checked==true){
+                  // alert($("table input:checkbox").index(this))
+                  alert($(this).parent().parent().find("input[type=hidden]").val());
+                }
+              });
+              //清空table
+              $("#SearchMemberTable tbody").html("");
+              const currentPageIndex = api.getCurrent();  //当前页面index
+              for (let i = (currentPageIndex - 1) * pageCount; (currentPageIndex - 1) * pageCount <= i && i < currentPageIndex * pageCount && i < usersInfo.users.length; i++) {
+                let addtr = "<tr><td>";
+                addtr += usersInfo.users[i].userName;
+                addtr += "<input type=\"hidden\" value=";
+                addtr += usersInfo.users[i].userid;
+                addtr += "></td><td><input type=\"checkbox\"/></td></tr>";
+                $("#SearchMemberTable tbody").append(addtr);
+              }
+              //显示结果table
+              $('#SearchMemberTable').css('display', "");
+            }
+          });
+        }
+      });
+    });
   });
 
   //监听iframe :当iframe加载完毕后绑定两个按钮的点击事件
@@ -139,40 +245,43 @@
                 }
               }
             })
-        } else {
-          //循环遍历ajax请求到的tableJsonData填充表格
-          for (let i = 0; i < tableJsonData.all_tasks_table_data.length; i++) {
-            const index = i + 1;
-            const result = " <tr><td><input type=\"hidden\" value=" + tableJsonData.all_tasks_table_data[i].taskId + ">" + index + "." + tableJsonData.all_tasks_table_data[i].taskName + "</td>" +
-              "<td class=\"project-status\">" + tableJsonData.all_tasks_table_data[i].current_status + "</td>" +
-              "<td>" + tableJsonData.all_tasks_table_data[i].task_explain_file + "</td>" +
-              "<td>" + tableJsonData.all_tasks_table_data[i].enrs + "</td>" +
-              "<td><button>参与任务</button></td>" +
-              "<td><button>设置</button></td>" +
-              "</tr>";
-            $("#iframe-table").contents().find("table")[0].insertRow(i + 1).innerHTML = result;
-          }
+        } else if (currentChooseText == "新建项目") {
+          //跳转到新建项目时绑定“+”按钮
+          $("#iframe-table").contents().find("#addNewLine").click(function () {
+            const result = " <tr>\n" +
+              "        <td>\n" +
+              "          <input type=\"text\">\n" +
+              "        </td>\n" +
+              "        <td>\n" +
+              "          <input type=\"text\">\n" +
+              "        </td>\n" +
+              "        <td>\n" +
+              "          <input type=\"text\">\n" +
+              "        </td>\n" +
+              "        <td>\n" +
+              "          <input type=\"text\">\n" +
+              "        </td>\n" +
+              "        <td>\n" +
+              "          <input type=\"text\">\n" +
+              "        </td>\n" +
+              "      </tr>";
+            //在当前行的前面添加
+            $("#iframe-table").contents().find("#currentTr").before(result);
+          });
 
-          //绑定“参与任务”、“设置”两个按钮的点击事件
-          $("#iframe-table").contents().find("table tr button")
-            .each(function (index, item) {
-              const taskText = $(this).parent().parent()[0].cells[0].innerText;
-              //获取隐藏域的id值
-              const hiddenText = $(this).parent().parent().find("input[type=hidden]").val();
-              if (index % 2 == 0) {
-                //每行第一个button
-                item.onclick = function () {
-                  const userId = $("#userId").val();
-                  return SwalConfirm(taskText, hiddenText, userId);
-                }
-              } else {
-                // 每行的第二个button
-                const taskStatus = $(this).parent().parent()[0].cells[1].innerText;  //当前状态值
-                item.onclick = function () {
-                  return updateBtn(taskStatus, hiddenText);
-                }
-              }
-            })
+          //选中人员按钮
+          $("#iframe-table").contents().find("#selectMemberBtn").click(function () {
+            //将table清空
+            $("#SearchMemberTable tbody").html("");
+            //将输入框的值清空
+            $("#SearchMemberText").val("");
+            //隐藏table
+            $('#SearchMemberTable').css('display', "None");
+            //显示"选择人员"框
+            $("#selectMemberModel").modal('show');
+            //隐藏分页框
+            $("#M-box-div").css("display", "none")
+          });
         }
       }
     });
@@ -188,9 +297,9 @@
     const updateFile = $("#InputFile")[0].files[0];
 
     let formData = new FormData();
-    formData.append("userid",userid);
-    formData.append("taskid",taskid);
-    formData.append("updateFile",updateFile);
+    formData.append("userid", userid);
+    formData.append("taskid", taskid);
+    formData.append("updateFile", updateFile);
 
     $.ajax({
       type: "POST",
@@ -231,9 +340,9 @@
     const updateFile = $("#InputFile")[0].files[0];
 
     let formData = new FormData();
-    formData.append("userid",userid);
-    formData.append("taskid",taskid);
-    formData.append("updateFile",updateFile);
+    formData.append("userid", userid);
+    formData.append("taskid", taskid);
+    formData.append("updateFile", updateFile);
 
     $.ajax({
       type: "POST",
@@ -263,6 +372,8 @@
     //隐藏窗口
     $("#showCheckModel").modal('hide');
   });
+
+
 </script>
 </body>
 </html>

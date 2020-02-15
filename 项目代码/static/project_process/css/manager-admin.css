@@ -53,3 +53,17 @@
 }
 
 /*style="width:70%;margin-bottom:2px;display:inline"*/
+.div-buttons{
+  text-align: center;
+}
+
+.SearchMeberTable input[type=checkbox]{
+  /*style=" width: 15px; height: 15px;*/
+  width: 15px;
+  height: 15px;
+}
+
+.SearchMeberTable td,th{
+  text-align: center;
+  margin:auto;
+}

@@ -31,7 +31,7 @@
         <li data-src="static/project_process/component/template-alltasks-enr-table/nostart_task_table.html">未启动任务</li>
       </ul>
     </div>
-    <div class="right iframe-div">
+    <div class="right iframe-div table-style">
       <iframe id="iframe-table" class="iframe-class"
               src="static/project_process/component/template-alltasks-enr-table/all_tasks_table.html"
               frameborder="0" scrolling="auto" onload="onMyFrameLoad()"></iframe>
@@ -225,15 +225,15 @@
           })
       },
       error: function (e) {
-        swal(
-          {
-            title: "更新失败",
-            text: "后台处理错误",
-            type: "error",
-            timer: 1500
-          })
-      }
-    })
+      swal(
+        {
+          title: "更新失败",
+          text: "后台处理错误",
+          type: "error",
+          timer: 1500
+        })
+    }
+  })
     $("#showLoadingImgModel").modal('hide');
   });
 

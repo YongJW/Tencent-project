@@ -1,0 +1,17 @@
+/*设置input框的宽度大小*/
+.new-add-project-input {
+  width: 8%;
+  margin-bottom: 12px;
+  display: inline;
+}
+
+/*第一排input框*/
+.add-project-div {
+  font-size: 14px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.table-style{
+  width: 100%;
+}

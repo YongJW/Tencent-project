@@ -6,13 +6,15 @@ $(function () {
     var url = $(this).attr("data-src");  //获取点击后切换的url
     $("#iframe-table").attr("src", url);  //切换iframe的url
   });
+
+
 });
 
 //绑定"状态/文件更新"按钮点击事件  打开窗口
 function openAuditing(taskId, const_userId) {
   //设置更新人员
- $("#updataUserName").html(const_userId);
-   $("#InputFile").val("");  //将上传文件处清空
+  $("#updataUserName").html(const_userId);
+  $("#InputFile").val("");  //将上传文件处清空
   //打开状态/文件更新窗口
   $("#showCheckModel").modal('show');
   $("#taskId").val(taskId);
@@ -27,7 +29,7 @@ function forgeData() {
     this.taskName = taskName;
     this.current_status = current_status;
     this.task_explain_file = task_explain_file;
-    this.enrs = enrs
+    this.enrs = enrs;
   }
 
 //tableJsonData为伪造的json数据
@@ -52,4 +54,26 @@ function forgeData() {
   console.log(tableJsonData.userId);
 
   return tableJsonData
+}
+
+
+function forgeMemberData() {
+  function user(id, name) {
+    this.userid = id;
+    this.userName = name;
+  }
+  let usersInfo = {};
+  const user1 = new user("12","蒋王");
+  const user2 = new user("13","海江");
+  const user3 = new user("14","章华");
+  const user4 = new user("15","刘十分");
+  const user5 = new user("16","张海");
+  const user6 = new user("17","王建");
+  const user7 = new user("18","章士谔");
+  const user8 = new user("19","宇玉溪");
+  const user9 = new user("20","六级大");
+  const user10 = new user("21","蒋幅度");
+  const user11 = new user("22","发室逢");
+  usersInfo.users = [user1,user2,user3,user4,user5,user6,user7,user8,user9,user10,user11];
+  return usersInfo;
 }
