@@ -107,8 +107,9 @@
 </div>
 <script type="text/javascript">
   $(function () {
+    //定义选中人员字典
+    let selectedMemberDic = new Map();
     $("#SearchMemberText").on("input", function () {
-
       //获取搜索的关键字
       const searchText = $("#SearchMemberText").val();
       const formData = new FormData();
@@ -129,44 +130,53 @@
             })
         },
         error: function (e) {
-          const usersInfo = forgeMemberData();
+          const usersInfo = forgeMemberData(); //获取伪数据
           const pageCount = 4; //每页显示的条数
           $("#SearchMemberTable tbody").html("");
           console.log(usersInfo);
           //显示第一页
           for (let i = 0; i < 1 * pageCount; i++) {
+            let isChecked = false;
+            if (selectedMemberDic.has(usersInfo.users[i].userid)) {
+              //是否已经选中
+              isChecked = true;
+            }
             let addtr = "<tr><td>";
             addtr += usersInfo.users[i].userName;
             addtr += "<input type=\"hidden\" value=";
             addtr += usersInfo.users[i].userid;
-            addtr += "></td><td><input type=\"checkbox\"/></td></tr>";
+            addtr += "></td><td><input type=\"checkbox\" ";
+            addtr += isChecked ? "checked=" + isChecked : "";
+            addtr += "></td></tr>";
             $("#SearchMemberTable tbody").append(addtr);
           }
           //显示结果table
           $('#SearchMemberTable').css('display', "");
 
-
+          //分页
           $('#M-box-div').pagination({
             mode: 'fixed',  //fixed固定数量模式
             totalData: usersInfo.users.length,  //数据总条数
             pageCount: Math.round(usersInfo.users.length / pageCount),  //总页数
             isHide: true,  //总页数为0或1时隐藏分页控件
             callback: function (api) {
-              $("#SearchMemberTable  input:checkbox").each(function (index, item) {
-                if ($(this)[0].checked==true){
-                  // alert($("table input:checkbox").index(this))
-                  alert($(this).parent().parent().find("input[type=hidden]").val());
-                }
-              });
+              getSelectMember();
               //清空table
               $("#SearchMemberTable tbody").html("");
               const currentPageIndex = api.getCurrent();  //当前页面index
               for (let i = (currentPageIndex - 1) * pageCount; (currentPageIndex - 1) * pageCount <= i && i < currentPageIndex * pageCount && i < usersInfo.users.length; i++) {
+                let isChecked = false;
+                if (selectedMemberDic.has(usersInfo.users[i].userid)) {
+                  //是否已经选中
+                  isChecked = true;
+                }
                 let addtr = "<tr><td>";
                 addtr += usersInfo.users[i].userName;
                 addtr += "<input type=\"hidden\" value=";
                 addtr += usersInfo.users[i].userid;
-                addtr += "></td><td><input type=\"checkbox\"/></td></tr>";
+                addtr += "></td><td><input type=\"checkbox\" ";
+                addtr += isChecked ? "checked=" + isChecked : "";
+                addtr += "></td></tr>";
                 $("#SearchMemberTable tbody").append(addtr);
               }
               //显示结果table
@@ -176,7 +186,33 @@
         }
       });
     });
+
+    $('#selectMemberModel').on('hide.bs.modal', function () {
+      getSelectMember();
+    });
+
+    //统计当前选中人员
+    function getSelectMember() {
+      $("#SearchMemberTable  input:checkbox").each(function (index, item) {
+        if ($(this)[0].checked == true) {
+          // 添加
+          selectedMemberDic.set($(this).parent().parent().find("input[type=hidden]").val(), $(this).parent().parent()[0].textContent);
+        } else {
+          //删除
+          selectedMemberDic.delete($(this).parent().parent().find("input[type=hidden]").val());
+        }
+      });
+      console.log(selectedMemberDic);
+      let Text = "";
+      for (let key of selectedMemberDic.keys()) {
+        Text += selectedMemberDic.get(key) + ",";
+      }
+      Text = Text.substr(0,Text.length-1);  //移除最后一个
+      //将选中的项目组成员添加到文本框中
+      $("#iframe-table").contents().find("#selectedMemberText").val(Text);
+    }
   });
+
 
   //监听iframe :当iframe加载完毕后绑定两个按钮的点击事件
   //“参与任务”和“设置”两个按钮

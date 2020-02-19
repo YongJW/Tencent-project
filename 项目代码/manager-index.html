@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>项目经理页</title>
+  <link rel="stylesheet" href="static/project_process/css/communal.css">
+  <link rel="stylesheet" href="static/project_process/component/sweetalert/sweetalert.css">
+  <link rel="stylesheet" href="static/project_process/component/pagination/pagination.css">
+  <link rel="stylesheet" href="static/project_process/component/bootstrap-3.3.7-dist/css/bootstrap.css">
+  <link rel="stylesheet" href="static/project_process/css/manager-admin.css">
+
+  <script src="static/project_process/js/jquery-3.2.1.js"></script>
+  <script src="static/project_process/component/sweetalert/sweetalert-dev.min.js"></script>
+  <script src="static/project_process/component/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+  <script src="static/project_process/component/pagination/jquery.pagination.js"></script>
+  <script src="static/project_process/js/manager-admin.js"></script>
+
+</head>
+<body>
+<input type="hidden" id="userId" value="null">
+<div class="main-div">
+  <div class="above">
+    <span class="txt">腾讯IT办公网新建项目</span>
+  </div>
+  <div class="below-div">
+    <div class="left choose-tasks">
+      <div class="job-navigation">任务导航</div>
+      <ul>
+        <li data-src="static/project_process/component/template-manager-admin-table/admin_table.html">
+          管理项目
+        </li>
+        <li data-src="static/project_process/component/template-manager-admin-table/new_add_project.html"
+            class="active">新建项目
+        </li>
+      </ul>
+    </div>
+    <div class="right iframe-div">
+      <iframe id="iframe-table" class="iframe-class"
+              src="static/project_process/component/template-manager-admin-table/new_add_project.html"
+              frameborder="0" scrolling="auto" onload="onMyFrameLoad()"></iframe>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+
+</script>
+</body>
+</html>
