@@ -7,7 +7,6 @@ $(function () {
     $("#iframe-table").attr("src", url);  //切换iframe的url
   });
 
-
 });
 
 //绑定"状态/文件更新"按钮点击事件  打开窗口

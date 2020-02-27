@@ -33,10 +33,30 @@
   color: #fff;
 }
 
+/*.choose-tasks ul{*/
+/*  list-style: none;*/
+/*  line-height: 30px;*/
+/*}*/
+/*.choose-tasks li{*/
+/*  padding-left: 30px;*/
+/*}*/
+
+
 .choose-tasks ul{
   list-style: none;
   line-height: 30px;
+  width: 78.3%;
+  margin-left: 40px
 }
+
 .choose-tasks li{
-  padding-left: 30px;
+  padding-left: 45px;
 }
+
+#InputFile{
+  height: auto;
+  width: auto;
+}
+
+
+

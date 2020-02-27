@@ -1,22 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'index.html' %}
 <head>
   <meta charset="UTF-8">
   <title>所有的任务页面-工程师</title>
+  {% block js_and_css %}
   <link rel="stylesheet" href="static/project_process/css/communal.css">
+  <link rel="stylesheet" href="static/project_process/component/pagination/pagination.css">
   <link rel="stylesheet" href="static/project_process/css/all_task_enr.css">
   <link rel="stylesheet" href="static/project_process/component/sweetalert/sweetalert.css">
   <link rel="stylesheet" href="static/project_process/component/bootstrap-3.3.7-dist/css/bootstrap.css">
   <script src="static/project_process/js/jquery-3.2.1.js"></script>
+  <script src="static/project_process/component/pagination/jquery.pagination.js"></script>
   <script src="static/project_process/component/sweetalert/sweetalert-dev.min.js"></script>
   <script src="static/project_process/component/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
   <script src="static/project_process/js/all_task_enr.js"></script>
+  <script src="static/project_process/js/mock.js"></script>
+  <script src="static/project_process/js/my_mock.js"></script>
+  {% endblock %}
 </head>
+{% block div_banner %}
 <body>
 <input type="hidden" id="userId" value="null">
 <div class="main-div">
   <div class="above">
-    <span class="txt">腾讯IT办公网新建项目</span>
+    <span class="txt" id="projectInfo"><input type="hidden" value="1" id="project_id_hidden">腾讯IT办公网新建项目</span>
   </div>
   <div class="below-div">
     <div class="left choose-tasks">
@@ -27,7 +33,7 @@
         </li>
         <li data-src="static/project_process/component/template-alltasks-enr-table/my_task_table.html">我的任务</li>
         <li data-src="static/project_process/component/template-alltasks-enr-table/progress_task_table.html">进行中任务</li>
-        <li data-src="static/project_process/component/template-alltasks-enr-table/leave_task_table.html">闲置任务</li>
+        <li data-src="static/project_process/component/template-alltasks-enr-table/leave_task_table.html">已完成任务</li>
         <li data-src="static/project_process/component/template-alltasks-enr-table/nostart_task_table.html">未启动任务</li>
       </ul>
     </div>
@@ -53,13 +59,13 @@
       <div class="modal-body">
         <form action="">
           <div class="form-group">
-            <input type="hidden" value="" id="taskId">
+            <input type="hidden" value="" id="updateModalProjectId">
+            <input type="hidden" value="" id="updataModalTaskId">
             状态更新：
             <select id="updates_status" class="form-control">
               <option value="1">进行中</option>
               <option value="2">已完成</option>
-              <option value="3">闲置中</option>
-              <option value="4">未进行</option>
+              <option value="3">未启动</option>
             </select>
           </div>
           <div class="form-group">
@@ -75,174 +81,226 @@
     </div>
   </div>
 </div>
-
+</body>
+{% endblock %}
+{% block add_other %}
 <script type="text/javascript">
+
   $(function () {
 
   });
+  // 用于保存分页的当前页面默认为第一页
+  var PageIndex = 1;
 
   //监听iframe :当iframe加载完毕后绑定两个按钮的点击事件
-  //“参与任务”和“设置”两个按钮
   function onMyFrameLoad() {
-    const currentChooseText = $(".active")[0].innerText;
-    let url = ""
-    if (currentChooseText == "所有任务") {
-      url = '/getTableData/all_tasks'
-    } else if (currentChooseText == "我的任务") {
-      url = '/getTableData/my_task'
-    } else if (currentChooseText == "进行中任务") {
-      url = '/getTableData/progress_task'
-    } else if (currentChooseText == "闲置任务") {
-      url = '/getTableData/leave_task'
-    } else if (currentChooseText == "未启动任务") {
-      url = '/getTableData/nostart_task'
-    }
+    //获取当前点击的状态名称
+    var currentChooseText = $(".choose-tasks .active")[0].innerText;
+    // currentChooseText  所有任务 我的任务 进行中任务 闲置任务  未启动任务
+    var formData = new FormData();
+
+    formData.append("choose_state", currentChooseText);
+    formData.append("project_id", "1");
     // iframe加载初始化的时候，请求数据填充表格
     $.ajax({
       type: "POST",
-      url: url,
-      processData: true,
-      dataType: "Json",
+      url: "{% url 'TaskEnr' %}",
+      data: formData,
+      processData: false,
+      contentType: false,
+      cache: false,
+      timeout: 100000,
       success: function (response) {
-        swal(
-          {
-            title: "更新成功",
-            text: "成功",
-            type: "success",
-            timer: 1500
-          })
-      },
-      error: function (e) {
-        //通过forgeData产生伪造数据
-        let tableJsonData = forgeData()
-        $("#userId").val(tableJsonData.userId);
-        console.log("userId" + $("#userId").val());
-
-        if (currentChooseText == "我的任务") {
-          //循环遍历ajax请求到的tableJsonData填充表格
-          for (let i = 0; i < tableJsonData.all_tasks_table_data.length; i++) {
-            const index = i + 1;
-            const result = " <tr><td><input type=\"hidden\" value=" + tableJsonData.all_tasks_table_data[i].taskId + ">" + index + "." + tableJsonData.all_tasks_table_data[i].taskName + "</td>" +
-              "<td class=\"project-status\">" + tableJsonData.all_tasks_table_data[i].current_status + "</td>" +
-              "<td>" + tableJsonData.all_tasks_table_data[i].task_explain_file + "</td>" +
-              "<td>" + tableJsonData.all_tasks_table_data[i].enrs + "</td>" +
-              "<td><button>设置</button></td>" +
-              "</tr>";
-            $("#iframe-table").contents().find("table")[0].insertRow(i + 1).innerHTML = result;
+        response = JSON.parse(response);  // 临时文件
+        //判断是否返回的是正确状态
+        if (response.status.success == true) {
+          //每页显示的条数
+          var pageCount = 4;
+          //循环遍历ajax请求到的数据填充表格
+          for (var i = 0; i < 1 * pageCount && i < response.data.length; i++) {
+            addnewRow(i, response);
           }
 
-          //绑定“设置”按钮的点击事件
-          $("#iframe-table").contents().find("table tr button")
-            .each(function (index, item) {
-              const taskText = $(this).parent().parent()[0].cells[0].innerText;
-              //获取隐藏域的id值
-              const hiddenText = $(this).parent().parent().find("input[type=hidden]").val();
-              // 每行的设置按钮
-              const taskStatus = $(this).parent().parent()[0].cells[1].innerText;  //当前状态值
-              item.onclick = function () {
-                return updateBtn(taskStatus, hiddenText);
+          //分页
+          $("#iframe-table").contents().find('#M-box-div').pagination({
+            mode: 'fixed',  //fixed固定数量模式
+            jump: true,
+            jumpIptCls: "my_jump_class",
+            jumpBtnCls: "my_jump_class",
+            totalData: response.data.length,  //数据总条数
+            pageCount: Math.ceil(response.data.length / pageCount),  //总页数
+            isHide: true,  //总页数为0或1时隐藏分页控件
+            callback: function (api) {
+              //清空table 中的tbody
+              $("#iframe-table").contents().find("table tbody").html("");
+              //当前页面index
+              var currentPageIndex = api.getCurrent();
+              //每次切换分页的时候保存页码
+              PageIndex = api.getCurrent();
+              //循环遍历ajax请求到的数据填充表格
+              for (var i = (currentPageIndex - 1) * pageCount; (currentPageIndex - 1) * pageCount <= i && i < currentPageIndex * pageCount && i < response.data.length; i++) {
+                addnewRow(i, response);
               }
-            })
+              //点击分页的页码后触发 绑定按钮事件
+              bindBtns();
+            }
+          });
+          //绑定按钮
+          bindBtns();
         } else {
-          //循环遍历ajax请求到的tableJsonData填充表格
-          for (let i = 0; i < tableJsonData.all_tasks_table_data.length; i++) {
-            const index = i + 1;
-            const result = " <tr><td><input type=\"hidden\" value=" + tableJsonData.all_tasks_table_data[i].taskId + ">" + index + "." + tableJsonData.all_tasks_table_data[i].taskName + "</td>" +
-              "<td class=\"project-status\">" + tableJsonData.all_tasks_table_data[i].current_status + "</td>" +
-              "<td>" + tableJsonData.all_tasks_table_data[i].task_explain_file + "</td>" +
-              "<td>" + tableJsonData.all_tasks_table_data[i].enrs + "</td>" +
-              "<td><button>参与任务</button></td>" +
-              "<td><button>设置</button></td>" +
-              "</tr>";
-            $("#iframe-table").contents().find("table")[0].insertRow(i + 1).innerHTML = result;
-          }
-
-          //绑定“参与任务”、“设置”两个按钮的点击事件
-          $("#iframe-table").contents().find("table tr button")
-            .each(function (index, item) {
-              const taskText = $(this).parent().parent()[0].cells[0].innerText;
-              //获取隐藏域的id值
-              const hiddenText = $(this).parent().parent().find("input[type=hidden]").val();
-              if (index % 2 == 0) {
-                //每行第一个button
-                item.onclick = function () {
-                  const userId = $("#userId").val();
-                  return SwalConfirm(taskText, hiddenText, userId);
-                }
-              } else {
-                // 每行的第二个button
-                const taskStatus = $(this).parent().parent()[0].cells[1].innerText;  //当前状态值
-                item.onclick = function () {
-                  return updateBtn(taskStatus, hiddenText);
-                }
-              }
+          //如果response.status.success返回的是false 表示后台处理出问题
+          swal(
+            {
+              title: "加载失败",
+              text: response.status.msg,
+              type: "error",
+              // timer: 1500
             })
         }
+      },
+      error: function (e) {
+        swal(
+          {
+            title: "警告！",
+            text: "服务器加载异常",
+            type: "error",
+            // timer: 1500
+          })
       }
     });
   }
 
+  function addnewRow(i, response) {
+    var index = i + 1;
+    var newRow = " <tr><td >" + index + "</td>" +
+      "<td  title=" + response.data[i].fields.task_name + "><input type=\"hidden\" value=" + response.data[i].fields.task_id + ">" + response.data[i].fields.task_name + "</td>" +
+      "<td class=\"project-status\">" + response.data[i].fields.task_status + "</td>" +
+      "<td title=" + response.data[i].fields.file_path + "><a  href='' download=" + response.data[i].fields.file_path + ">文件下载</a></td>" +
+      "<td title=" + response.data[i].fields.task_member + ">" + response.data[i].fields.task_member + "</td>";
+    if (response.data[i].fields.is_join == true) {
+      newRow += "<td><button >退出任务</button></td>" +
+        "<td><button>设置</button></td>" +
+        "</tr>";
+    } else {
+      newRow += "<td><button>参与任务</button></td>" +
+        "<td><button>设置</button></td>" +
+        "</tr>";
+    }
+    $("#iframe-table").contents().find("table tbody").append(newRow);
+  }
+
+  //绑定每行的“参与任务” “文件/状态更新”按钮
+  function bindBtns() {
+    //绑定“参与任务”、“设置”两个按钮的点击事件
+    $("#iframe-table").contents().find("table tr button")
+      .each(function (index, item) {
+        //获取任务名  用于弹出框显示
+        var taskText = $(this).parent().parent()[0].cells[1].innerText;
+        //获取隐藏域的project_id值
+        var hidden_project_id = $("#project_id_hidden").val();
+        //获取隐藏域的task_id
+        var hidden_task_id = $(this).parent().parent().find("input[type=hidden]")[0].value;
+        if (index % 2 == 0) {
+          //每行第一个button  参与/退出操作
+          item.onclick = function () {
+            return SwalConfirm(taskText, hidden_project_id, hidden_task_id, item);
+          }
+        } else {
+          // 每行的第二个button  状态/文件更新
+          //获取任务的当前状态值
+          var taskStatus = $(this).parent().parent()[0].cells[2].innerText;
+          item.onclick = function () {
+            var current_btn_text = $(this).parent().parent()[0].cells[5].innerText;
+            //如果按钮上的文字是参与任务，则无权限参点击设置
+            if (current_btn_text == "参与任务") {
+              swal(
+                {
+                  title: "无权限",
+                  text: "无设置权限，请先参与此任务",
+                  type: "info",
+                  // timer: 1500
+                })
+            } else {
+              return updateBtn(taskStatus, hidden_project_id, hidden_task_id);
+            }
+
+          }
+        }
+      })
+  }
+
   // 状态/文件更新窗口 确认按钮
   $("#StateConfirmBtn").click(function () {
-    //选择的文件状态值
-    // 1代表：进行中
-    // 2代表：已完成
-    // 3代表：闲置中
-    // 4代表：未进行
-    const selectVal = $("#updates_status").val();
+    //状态值
+    var task_status = $("#updates_status").val();
     //上传的文件
-    const fileUpload = $("#InputFile")[0].files[0];
-    //获取隐藏域的id值
-    const hiddenTaskId = $("#taskId").val();
-    const userId = $("#userId").val();
-    const formData = new FormData();
-    formData.append("selectVal", selectVal);
-    formData.append("file", fileUpload);
-    formData.append("userId", userId);
-    formData.append("taskId", hiddenTaskId);
-    // formData中的数据说明
-    // parameter1.selectVal表示选择的文件状态值
-    // 1代表：进行中
-    // 2代表：已完成
-    // 3代表：闲置中
-    // 4代表：未进行
-    // parameter2.file表示上传的文件
-    // parameter3.userId表示用户id
-    // parameter4.taskId表示当前任务Id
+    var file_upload = $("#InputFile")[0].files[0];
+    //获取隐藏域的project_id
+    var project_id = $("#updateModalProjectId").val();
+    //获取隐藏域的task_id
+    var task_id = $("#updataModalTaskId").val();
+    var formData = new FormData();
+    formData.append("project_id", project_id);
+    formData.append("task_id", task_id);
+    formData.append("file_upload", file_upload);
+    formData.append("task_status", task_status);
     $.ajax({
       type: "POST",
-      url: "/updateState",
+      url: "{% url 'FileUpdate' %}",
       data: formData,
       processData: false,
-      dataType: "Json",
+      contentType: false,
+      cache: false,
+      timeout: 100000,
       success: function (response) {
-        swal(
-          {
-            title: "更新成功",
-            text: "成功",
-            type: "success",
-            timer: 1500
-          })
+        response = JSON.parse(response);  // 临时文件
+        if (response.status.success == true) {
+          swal(
+            {
+              title: "更新成功",
+              text: "状态/文件更新成功",
+              type: "success",
+              timer: 1500
+            });
+          // 刷新导航
+          RefreshNavigation();
+        } else {
+          swal(
+            {
+              title: "更新失败",
+              text: response.status.msg,
+              type: "error",
+              // timer: 1500
+            })
+        }
       },
       error: function (e) {
-      swal(
-        {
-          title: "更新失败",
-          text: "后台处理错误",
-          type: "error",
-          timer: 1500
-        })
-    }
-  })
+        swal(
+          {
+            title: "警告！",
+            text: "服务器加载异常",
+            type: "error",
+            // timer: 1500
+          })
+      }
+    });
     $("#showLoadingImgModel").modal('hide');
   });
 
-  //“参与任务”按钮
-  function SwalConfirm(taskText, hiddenText, userId) {
+  //“参与任务”按钮  弹出框
+  function SwalConfirm(taskText, hidden_project_id, hidden_task_id, item) {
+    //获取按钮上的文字
+    var BtnText = item.innerText;
+    var infoText = "";
+    if (BtnText == "参与任务") {
+      infoText = "是否已与项目经理确认参与此项任务？";
+    } else if (BtnText == "退出任务") {
+      infoText = "是否已与项目经理确认退出此项任务？"
+    }
     swal(
       {
         title: taskText,
-        text: "是否已与项目经理确认参与此项任务？",
+        text: infoText,
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#39dd17",
@@ -252,42 +310,58 @@
         closeOnCancel: false
       },
       function (isConfirm) {
-        const formData = new FormData();
-        formData.append("taskId", hiddenText);
-        formData.append("userId", userId);
-        //formData中的数据说明
-        //parameter1:taskId表示参与任务ID
-        //parameter2:userId表示当前登录用户
+        var formData = new FormData();
+        formData.append("project_id", hidden_project_id);
+        formData.append("task_id", hidden_task_id);
+        //表示按钮的操作  参与任务或者退出任务
+        formData.append("btn_operation", BtnText);
         if (isConfirm) {
           $.ajax({
             type: "POST",
-            url: "/joinTask",
-            processData: false,
+            url: "{% url 'JoinTask' %}",
             data: formData,
-            dataType: "Json",
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 100000,
             success: function (response) {
-              swal(
-                {
-                  title: "参与任务成功",
-                  text: "您将参与该项任务",
-                  type: "success",
-                  timer: 1500
-                })
+              response = JSON.parse(response);  // 临时文件
+              if (response.status.success == true) {
+                item.innerText = BtnText == "参与任务" ? "退出任务" : "参与任务";
+                var swalText = BtnText == "参与任务" ? "您已参与该项任务" : "您已退出该项任务";
+                swal(
+                  {
+                    title: BtnText + "成功",
+                    text: swalText,
+                    type: "success",
+                    timer: 1500
+                  });
+                // 刷新导航
+                RefreshNavigation();
+              } else {
+                swal(
+                  {
+                    title: BtnText + "失败",
+                    text: response.status.msg,
+                    type: "error",
+                    // timer: 1500
+                  })
+              }
             },
             error: function (e) {
               swal(
                 {
-                  title: "参与任务成功失败",
-                  text: "后台处理错误",
+                  title: "警告！",
+                  text: "服务器加载异常",
                   type: "error",
-                  timer: 1500
-                })
+                  // timer: 1500
+                });
             }
           })
         } else {
           swal({
             title: "已取消",
-            text: "您取消了参与任务操作！",
+            text: "您取消了操作！",
             type: "success",
             timer: 1500
           })
@@ -295,6 +369,22 @@
       }
     )
   }
+
+  //刷新导航
+  function RefreshNavigation() {
+    //手动触发刷新页面
+    //获取点击后切换的url
+    var url = $(".choose-tasks ul li").attr("data-src");
+    //切换iframe的url
+    $("#iframe-table").attr("src", url);
+    //手动刷新页面后过一段时间跳转到指定页面  PageIndex页
+    setTimeout(function () {
+      //跳转到指定页
+      $("#iframe-table").contents().find("#M-box-div > input").val(PageIndex);
+      //手动触发“跳转”
+      $("#iframe-table").contents().find("#M-box-div > a.my_jump_class").trigger("click");
+    }, 1000);
+  }
 </script>
-</body>
-</html>
+{% endblock %}
+

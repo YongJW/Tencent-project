@@ -1,0 +1,118 @@
+
+.iframe-class {
+  width: 100%;
+  height: 100%;
+  /*background-color: chartreuse;*/
+}
+
+.left {
+  float: left;
+  width: 20%;
+  height: 100%;
+  /*background-color: cyan;*/
+}
+
+.right {
+  float: right;
+  width: 80%;
+  height: 100%;
+}
+
+
+/*任务导航栏*/
+.job-navigation {
+  margin-top: 15px;
+  margin-left: 40px;
+  padding: 5px;
+  border: 1px solid #e9e9e9;
+  text-align: center;
+}
+
+/*点击li*/
+.active {
+  background-color: #00a0e9;
+  color: #fff;
+}
+
+/*.choose-tasks ul {*/
+/*  list-style: none;*/
+/*  line-height: 30px;*/
+/*}*/
+
+/*.choose-tasks li {*/
+/*  padding-left: 30px;*/
+/*}*/
+
+.choose-tasks ul{
+  list-style: none;
+  line-height: 30px;
+  width: 78.3%;
+  margin-left: 40px
+}
+
+.choose-tasks li{
+  padding-left: 45px;
+}
+
+.manager-admin-file-update {
+  display: inline;
+}
+
+.manager-admin-input-file {
+  width: 70%;
+  margin-bottom: 2px;
+  display: inline;
+}
+
+/*style="width:70%;margin-bottom:2px;display:inline"*/
+.div-buttons {
+  text-align: center;
+}
+
+.SearchMeberTable input[type=checkbox] {
+  /*style=" width: 15px; height: 15px;*/
+  width: 15px;
+  height: 15px;
+}
+
+.SearchMeberTable td, th {
+  text-align: center;
+  margin: auto;
+}
+
+/*table、div文字不换行*/
+.table-style {
+  word-break: keep-all;
+  white-space: nowrap;
+}
+
+#onlieEditingTable tbody {
+  display: block;
+  height: 200px;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;  /*// 为了滚动顺畅*/
+}
+
+#onlieEditingTable tbody::-webkit-scrollbar {
+  width: 10px;
+  background-color: white;
+}
+
+#onlieEditingTable tbody::-webkit-scrollbar-thumb
+{
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(239, 245, 233, 0.3);
+  background-color: #555;
+}
+
+#onlieEditingTable thead, #onlieEditingTable tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  /*//fixed：固定表格布局*/
+}
+
+#onlieEditingTable thead {
+  width: calc(100% - 10px)
+  /*//函数计算宽度*/
+}
