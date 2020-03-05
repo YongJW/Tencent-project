@@ -1,0 +1,1012 @@
+{% extends 'index.html' %}
+<head>
+  <meta charset="UTF-8">
+  <title>所有的任务页面-项目经理</title>
+  {% block js_and_css %}
+  <link rel="stylesheet" href="static/project_process/css/communal.css">
+  <link rel="stylesheet" href="static/project_process/component/pagination/pagination.css">
+  <link rel="stylesheet" href="static/project_process/component/sweetalert/sweetalert.css">
+  <link rel="stylesheet" href="static/project_process/css/all_task_man.css">
+  <link rel="stylesheet" href="static/project_process/component/bootstrap-3.3.7-dist/css/bootstrap.css">
+  <script src="static/project_process/js/jquery-3.2.1.js"></script>
+  <script src="static/project_process/component/pagination/jquery.pagination.js"></script>
+  <script src="static/project_process/component/sweetalert/sweetalert-dev.min.js"></script>
+  <script src="static/project_process/component/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+  <script src="static/project_process/js/all_task_man.js"></script>
+  <script src="static/project_process/js/mock.js"></script>
+  <script src="static/project_process/js/my_mock.js"></script>
+  {% endblock %}
+</head>
+{% block div_banner %}
+<body>
+<div class="main-div">
+  <div class="above">
+    <span class="txt" id="projectInfo">腾讯IT办公网新建项目</span>
+    <input type="hidden" id="project_id" value="123">
+  </div>
+  <div class="below-div">
+    <div class="left choose-tasks">
+      <div class="job-navigation">任务导航</div>
+      <ul>
+        <li data-src="static/project_process/component/template_all_task_man_table/edit_project.html" class="active">
+          任务管理
+        </li>
+        <li data-src="static/project_process/component/template_all_task_man_table/edit_project1.html">进行中任务</li>
+        <li data-src="static/project_process/component/template_all_task_man_table/edit_project2.html">已完成任务</li>
+        <li data-src="static/project_process/component/template_all_task_man_table/edit_project3.html">未启动任务</li>
+      </ul>
+    </div>
+    <div class="right iframe-div table-style">
+      <iframe id="iframe-table" class="iframe-class"
+              src="static/project_process/component/template_all_task_man_table/edit_project.html"
+              frameborder="0" scrolling="auto" onload="onMyFrameLoad()"></iframe>
+    </div>
+  </div>
+</div>
+
+
+<!--点击“审核”按钮弹出窗口-->
+<div id="showCheckModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" align="center">文件审核</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <input type="hidden" value="" id="CheckProjectId">
+          <input type="hidden" value="" id="ChecktaskId">
+          <lable>更新人员：</lable>
+          <span id="updataUserName">未知</span><br>
+        </div>
+        <div class="form-group">
+          <lable>更新日期：</lable>
+          <span id="updatetime">未知</span><br>
+        </div>
+        <div class="form-group">
+          <lable>审核文件：</lable>
+          <span><a href="" download="" id="verify_file_path">审核文件</a></span><br>
+        </div>
+        <!--        <div class="form-group manaaddNewLineger-admin-file-update">-->
+        <!--          <lable>文件更新：</lable>-->
+        <!--          <input type="file" id="InputFile" class="manager-admin-input-file" style="display:inline"/>-->
+        <!--        </div>-->
+      </div>
+      <div class=" div-buttons modal-footer ">
+        <button type="button" class="btn btn-primary" id="PassConfirmBtn">&nbsp;通过&nbsp;</button>
+        <button type="button" class="btn btn-primary" id="noPassConfirmBtn">不通过</button>
+        <button type="button" class="btn btn-primary  " data-dismiss="modal">&nbsp;退出&nbsp;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--点击“编辑”按钮弹出窗口-->
+<div id="showEditModel" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog  " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" align="center">任务编辑</h4>
+      </div>
+      <div class="modal-body">
+        <table class=" table  table-style " id="edit_task_table">
+          <tr>
+            <td><b class="necessary">*</b>任务编号:</td>
+            <td><input type="text" id="edit_task_id"><input type="hidden" id="edit_task_project_id"></td>
+          </tr>
+          <tr>
+            <td><b class="necessary">*</b>任务名:</td>
+            <td><input type="text" id="edit_task_name"></td>
+          </tr>
+          <tr>
+            <td><b class="necessary">*</b>当前状态:</td>
+            <td><select id="edit_task_status" style="width: 65%;height: 25px">
+              <option value="进行中">进行中</option>
+              <option value="已完成">已完成</option>
+              <option value="未启动">未启动</option>
+            </select>
+            </td>
+          </tr>
+          <tr>
+            <td>说明文件:</td>
+            <td><input type="file" id="edit_task_file"></td>
+          </tr>
+          <tr>
+            <td>参与工程师:<b class="necessary">*表示必填项</b></td>
+            <td><input type="text" id="edit_task_enr" readonly="readonly"></td>
+          </tr>
+        </table>
+        <b class="necessary">*表示必填项</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b class="necessary">说明文件不上传则默认使用上次说明文件</b>
+      </div>
+      <div class=" div-buttons modal-footer ">
+        <button type="button" class="btn btn-primary" id="EditConfirmBtn">&nbsp;确认&nbsp;</button>
+        <button type="button" class="btn btn-primary  " data-dismiss="modal">&nbsp;退出&nbsp;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--添加新任务的窗口-->
+<div id="showAddTaskModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" align="center">新增任务</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table-style table " id="onlieEditingTable">
+          <thead>
+          <tr>
+            <th><b class="necessary">*</b>任务编号&nbsp;</th>
+            <th><b class="necessary">*</b>任务名称&nbsp;</th>
+            <th>工程师</th>
+            <th>增/删行&nbsp;&nbsp;</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text" readonly="readonly"></td>
+            <td style="text-align: center">
+              <button onclick="devareTr(this)">-</button>
+            </td>
+          </tr>
+          <tr id="currentTr">
+            <td><b class="necessary">*表示必填项</b></td>
+            <td></td>
+            <td></td>
+            <td style="text-align: center">
+              <button onclick="addNewRow()">+</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class=" div-buttons modal-footer " style="text-align: center">
+        <button type="button" class="btn btn-primary" id="onlineEditingConfirmBtn">提交</button>
+        <button type="button" class="btn btn-primary" id="onlineEditingClearTable">清除</button>
+        <button type="button" class="btn btn-primary  " data-dismiss="modal">退出</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--选择人员窗口-->
+<div id="managerSelectMemberModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" align="center" id="SelectMemberTitle">选择项目人员</h4>
+      </div>
+      <div class="modal-body" id="SearchMeberModal">
+        <input type="text" placeholder="输入搜索项目人员名字" class="form-control" id="SearchMemberText">
+        <table class="table  table-hover SearchMeberTable" id="SearchMemberTable" style="display: none">
+          <thead>
+          <tr>
+            <th>姓名</th>
+            <th>是否选中</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+        <div class="M-box m-style" id="M-box-div"></div>
+      </div>
+      <div class=" div-buttons modal-footer ">
+        <!--        <button type="button" class="btn btn-primary" id="PassConfirmBtn">&nbsp;通过&nbsp;</button>-->
+        <!--        <button type="button" class="btn btn-primary" id="noPassConfirmBtn">不通过</button>-->
+        <button type="button" class="btn btn-primary  " data-dismiss="modal">&nbsp;关闭&nbsp;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+{% endblock %}
+{% block add_other %}
+<script type="text/javascript">
+
+  $(function () {
+    //页面初始化时，绑定项目id和项目名称
+    if (location.search.length > 0 && location.search.indexOf("&") > -1) {
+      //设置项目名称和隐藏域的项目id
+      var url_str = location.search.substring(1);
+      var paras = url_str.split("&");
+      var project_id = paras[0].split("=")[1];
+      var project_name = decodeURIComponent(paras[1].split("=")[1]);
+      $("#projectInfo").html(project_name);
+      $("#project_id").val(project_id);
+    }
+  });
+  //自定义Array 数组的remove方法
+  Array.prototype.remove = function (val) {
+    var index = this.indexOf(val);
+    if (index > -1) {
+      this.splice(index, 1);
+    }
+  };
+  // 用于保存分页的当前页面默认为第一页
+  var PageIndex = 1;
+
+  //监听iframe :当iframe加载完毕后绑定两个按钮的点击事件
+  function onMyFrameLoad() {
+    //绑定"添加任务"按钮的点击事件
+    $("#iframe-table").contents().find("#addNewTask").click(function () {
+      // 新增任务中的选择工程师, input框的鼠标聚焦事件
+      TdFocus();
+      //在窗口加载初期
+      $("#showAddTaskModal").modal('show');
+    });
+    //获取当前点击的状态名称
+    var currentChooseText = $(".choose-tasks .active")[0].innerText;
+    var formData = new FormData();
+    var project_id = $("#project_id").val();
+    //隐藏域的project_id
+    formData.append("project_id", project_id);
+    formData.append("choose_state", currentChooseText);
+    // iframe加载初始化的时候，请求数据填充表格
+    $.ajax({
+      type: "POST",
+      url: "{% url 'ProManTaskContents' %}",
+      data: formData,
+      processData: false,
+      contentType: false,
+      cache: false,
+      timeout: 100000,
+      success: function (response) {
+        response = JSON.parse(response);  // 临时文件
+        //判断是否返回的是正确状态
+        if (response.status.success == true) {
+          //每页显示的条数
+          var pageCount = 4;
+          //循环遍历ajax请求到的数据填充表格
+          for (var i = 0; i < pageCount && i < response.data.length; i++) {
+            TaksAdminaddnewRow(i, response);
+          }
+          //绑定按钮
+          bindBtns();
+          //分页
+          $("#iframe-table").contents().find('#M-box-div').pagination({
+            mode: 'fixed',  //fixed固定数量模式
+            jump: true,
+            jumpIptCls: "my_jump_class",
+            jumpBtnCls: "my_jump_class",
+            totalData: response.data.length,  //数据总条数
+            pageCount: Math.ceil(response.data.length / pageCount),  //总页数
+            isHide: true,  //总页数为0或1时隐藏分页控件
+            callback: function (api) {
+              //清空table 中的tbody
+              $("#iframe-table").contents().find("table tbody").html("");
+              //当前页面index
+              var currentPageIndex = api.getCurrent();
+              //每次切换分页的时候保存页码
+              PageIndex = api.getCurrent();
+              //循环遍历ajax请求到的数据填充表格
+              for (var i = (currentPageIndex - 1) * pageCount; (currentPageIndex - 1) * pageCount <= i && i < currentPageIndex * pageCount && i < response.data.length; i++) {
+                TaksAdminaddnewRow(i, response);
+              }
+              //点击分页的页码后触发 绑定按钮事件
+              bindBtns();
+            }
+          });
+
+          // bindBtns();
+        } else {
+          //如果response.status.success返回的是false 表示后台处理出问题
+          swal(
+            {
+              title: "加载失败",
+              text: response.status.msg,
+              type: "error",
+              // timer: 1500
+            })
+        }
+      },
+      error: function (e) {
+        swal(
+          {
+            title: "警告！",
+            text: "服务器加载异常",
+            type: "error",
+            // timer: 1500
+          })
+      }
+    });
+  }
+
+  //填充行的数据
+  function TaksAdminaddnewRow(i, response) {
+    var IsCheckString = "";
+    if (response.data[i].fields.have_verify == true) {
+      IsCheckString = "<button class=\"btn btn-primary\">待审核</button>";
+      IsCheckString += "<input type=\"hidden\" value=" + response.data[i].fields.up_author_name + ">";
+      IsCheckString += "<input type=\"hidden\" value=" + response.data[i].fields.up_time + ">";
+      IsCheckString += "<input type=\"hidden\" value=" + response.data[i].fields.verify_file_path + ">";
+    }
+    var index = i + 1;
+    var newRow = " <tr><td >" + response.data[i].fields.task_id + "</td>" +
+      "<td  title=" + response.data[i].fields.task_name + "><input type=\"hidden\" value=" + response.data[i].fields.project_id + "><input type=\"hidden\" value=" + response.data[i].fields.task_id + ">" + response.data[i].fields.task_name + "</td>" +
+      "<td class=\"project-status\">" + response.data[i].fields.task_status + "</td>" +
+      "<td title=" + response.data[i].fields.file_path + "><a  href='' download=" + response.data[i].fields.file_path + ">文件下载</a></td>" +
+      "<td title=" + response.data[i].fields.task_member + ">" + response.data[i].fields.task_member + "</td>" +
+      "      <td>" + IsCheckString + "</td>\n" +
+      "      <td><button class=\"btn btn-primary\">编辑</button>&nbsp;&nbsp;&nbsp;<button class=\"btn btn-primary\">删除</button></td>\n" +
+      "    </tr>";
+    $("#iframe-table").contents().find("#editTable tbody").append(newRow);
+  }
+
+  //绑定每行的待审核	编辑   删除按钮
+  function bindBtns() {
+    //绑定
+    $("#iframe-table").contents().find("table tr button").each(function (index, item) {
+      if (item.innerText == "待审核") {
+        //待审核按钮的点击事件
+        item.onclick = function () {
+          //项目id
+          var project_id = $("#project_id").val();
+          $("#CheckProjectId").val(project_id);
+
+          //任务id
+          var task_id = $(this).parent().parent()[0].cells[1].children[1].value;
+          $("#ChecktaskId").val(task_id);
+
+          //更新人员
+          var up_author_name = $(this).nextAll()[0].value;
+          $("#updataUserName").html(up_author_name);
+
+          //更新时间
+          var up_time = $(this).nextAll()[1].value;
+          $("#updatetime").html(up_time);
+
+          //更新文件
+          var verify_file_path = $(this).nextAll()[2].value;
+          $("#verify_file_path").attr("download", verify_file_path);
+
+          //打开模态框
+          $("#showCheckModel").modal('show');
+        }
+      } else if (item.innerText == "编辑") {
+        //编辑按钮的点击事件
+        item.onclick = function () {
+          // 项目id
+          var project_id = $("#project_id").val();
+          $("#edit_task_project_id").val(project_id);
+
+          //任务id  任务编号
+          var task_id = $(this).parent().parent()[0].cells[1].children[1].value;
+          $("#edit_task_id").val(task_id);
+
+          //任务名
+          var task_name = $(this).parent().parent()[0].cells[1].innerText;
+          $("#edit_task_name").val(task_name);
+
+          //任务状态
+          var task_status = $(this).parent().parent()[0].cells[2].innerText;
+          if (task_status == "进行中") {
+            $("#edit_task_status").val("进行中");
+          } else if (task_status == "已完成") {
+            $("#edit_task_status").val("已完成");
+          } else if (task_status == "未启动") {
+            $("#edit_task_status").val("未启动");
+          }
+
+          //说明文件
+          // var task_file = $(this).parent().parent()[0].cells[3].children[0].download;
+          // $("#edit_task_file_a").attr("download",task_file);
+
+          //参与工程师
+          var task_enr = $(this).parent().parent()[0].cells[4].innerText;
+          $("#edit_task_enr").val(task_enr);
+
+          $("#showEditModel").modal("show");
+        }
+      } else if (item.innerText == "删除") {
+        var that = $(this);
+        //编辑按钮的点击事件
+        item.onclick = function () {
+          swal(
+            {
+              title: "删除任务",
+              text: "是否确认删除该项任务",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#39dd17",
+              confirmButtonText: "已经确认",
+              cancelButtonText: "取消",
+              closeOnConfirm: false,
+              closeOnCancel: false
+            },
+            function (isConfirm) {
+              var formData = new FormData();
+              //项目id
+              var project_id = $("#project_id").val();
+              //任务id  任务编号
+              var task_id = that.parent().parent()[0].cells[1].children[1].value;
+              formData.append("project_id", project_id);
+              formData.append("task_id", task_id);
+              if (isConfirm) {
+                $.ajax({
+                  type: "POST",
+                  url: "{% url 'DeleteTask' %}",
+                  data: formData,
+                  processData: false,
+                  contentType: false,
+                  cache: false,
+                  timeout: 100000,
+                  success: function (response) {
+                    response = JSON.parse(response);  // 临时文件
+                    if (response.status.success == true) {
+                      swal(
+                        {
+                          title: "成功",
+                          text: "成功删除此项任务",
+                          type: "success",
+                          timer: 1500
+                        });
+                      // 刷新导航
+                      RefreshNavigation();
+                    } else {
+                      swal(
+                        {
+                          title: "成功",
+                          text: "删除此项任务失败",
+                          type: "error",
+                          // timer: 1500
+                        })
+                    }
+                  },
+                  error: function (e) {
+                    swal(
+                      {
+                        title: "警告！",
+                        text: "服务器加载异常",
+                        type: "error",
+                        // timer: 1500
+                      });
+                  }
+                })
+              } else {
+                swal({
+                  title: "已取消",
+                  text: "您取消了操作！",
+                  type: "success",
+                  timer: 1500
+                })
+              }
+            }
+          )
+        }
+      }
+    });
+  }
+
+  //审核通过按钮
+  $("#PassConfirmBtn").click(function () {
+    //项目id
+    var project_id = $("#CheckProjectId").val();
+
+    // 任务id
+    var task_id = $("#ChecktaskId").val();
+    var formData = new FormData();
+    formData.append("project_id", project_id);
+    formData.append("task_id", task_id);
+    formData.append("is_pass", true);
+    $.ajax({
+      type: "POST",
+      url: "{% url 'FileVerify' %}",
+      data: formData,
+      processData: false,
+      contentType: false,
+      cache: false,
+      timeout: 100000,
+      success: function (response) {
+        response = JSON.parse(response);  // 临时文件
+        if (response.status.success == true) {
+          swal(
+            {
+              title: "成功",
+              text: "审核通过成功",
+              type: "success",
+              timer: 1500
+            })
+          //刷新导航
+          RefreshNavigation();
+        } else {
+          //如果response.status.success返回的是false 表示后台处理出问题
+          swal(
+            {
+              title: "加载失败",
+              text: response.status.msg,
+              type: "error",
+              // timer: 1500
+            })
+        }
+      },
+      error: function (e) {
+        swal(
+          {
+            title: "警告！",
+            text: "服务器加载异常",
+            type: "error",
+            // timer: 1500
+          })
+        //刷新导航
+        RefreshNavigation();
+      }
+    });
+    //隐藏窗口
+    $("#showCheckModel").modal('hide');
+  });
+
+  //审核不通过
+  $("#noPassConfirmBtn").click(function () {
+    //项目id
+    var project_id = $("#CheckProjectId").val();
+
+    // 任务id
+    var task_id = $("#ChecktaskId").val();
+    var formData = new FormData();
+    formData.append("project_id", project_id);
+    formData.append("task_id", task_id);
+    formData.append("is_pass", false);
+    $.ajax({
+      type: "POST",
+      url: "{% url 'FileVerify' %}",
+      data: formData,
+      processData: false,
+      contentType: false,
+      cache: false,
+      timeout: 100000,
+      success: function (response) {
+        response = JSON.parse(response);  // 临时文件
+        if (response.status.success == true) {
+          swal(
+            {
+              title: "成功",
+              text: "审核不通过成功",
+              type: "success",
+              timer: 1500
+            })
+        } else {
+          //如果response.status.success返回的是false 表示后台处理出问题
+          swal(
+            {
+              title: "加载失败",
+              text: response.status.msg,
+              type: "error",
+              // timer: 1500
+            })
+        }
+      },
+      error: function (e) {
+        swal(
+          {
+            title: "警告！",
+            text: "服务器加载异常",
+            type: "error",
+            // timer: 1500
+          })
+      }
+    });
+    //隐藏窗口
+    $("#showCheckModel").modal('hide');
+  });
+
+  //编辑确认按钮
+  $("#EditConfirmBtn").click(function () {
+    //项目id
+    var project_id = $("#project_id").val();
+    //任务id
+    var task_id = $("#edit_task_id").val();
+    //任务名
+    var task_name = $("#edit_task_name").val();
+    //任务状态
+    var task_status = $("#edit_task_status").val();
+    //任务说明文件
+    var task_file = $("#edit_task_file")[0].files[0];
+    //任务参与工程师
+    var task_enr = $("#edit_task_enr").val();
+    if (project_id.length == 0 || task_id.length == 0 || task_name.length == 0 || task_status.length == 0) {
+      swal(
+        {
+          title: "警告",
+          text: "请填写必填项",
+          type: "error",
+          // timer: 1500
+        })
+    } else {
+      var formData = new FormData();
+      formData.append("project_id", project_id);
+      formData.append("task_id", task_id);
+      formData.append("task_name", task_name);
+      formData.append("task_status", task_status);
+      formData.append("task_file", task_file);
+      formData.append("task_enr", task_enr);
+      $.ajax({
+        type: "POST",
+        url: "{% url 'UpdateTask' %}",
+        data: formData,
+        processData: false,
+        contentType: false,
+        cache: false,
+        timeout: 100000,
+        success: function (response) {
+          response = JSON.parse(response);  // 临时文件
+          //判断是否返回的是正确状态
+          if (response.status.success == true) {
+            $("#showEditModel").modal('hide');
+            //刷新数据
+            RefreshNavigation();
+            swal(
+              {
+                title: "成功",
+                text: "更新任务信息成功",
+                type: "success",
+                // timer: 1500
+              })
+
+          } else {
+            //如果response.status.success返回的是false 表示后台处理出问题
+            swal(
+              {
+                title: "加载失败",
+                text: response.status.msg,
+                type: "error",
+                // timer: 1500
+              })
+          }
+        },
+        error: function (e) {
+          swal(
+            {
+              title: "警告！",
+              text: "服务器加载异常",
+              type: "error",
+              // timer: 1500
+            })
+        }
+      });
+    }
+  });
+
+  //刷新导航
+  function RefreshNavigation() {
+    //手动触发刷新页面
+    //获取点击后切换的url
+    var url = $(".choose-tasks ul li.active").attr("data-src");
+    //切换iframe的url
+    $("#iframe-table").attr("src", url);
+
+    //手动刷新页面后过一段时间跳转到指定页面  PageIndex页
+    setTimeout(function () {
+      //跳转到指定页
+      $("#iframe-table").contents().find("#M-box-div > input").val(PageIndex);
+      //手动触发“跳转”
+      $("#iframe-table").contents().find("#M-box-div > a.my_jump_class").trigger("click");
+    }, 1000);
+  }
+
+  //新增任务提交按钮
+  $("#onlineEditingConfirmBtn").click(function () {
+    //项目id
+    var project_id = $("#project_id").val();
+    var projectTableDate = new Array();
+    $('#onlieEditingTable tbody tr').each(function () {
+      var row = new Array();
+      $(this).find('input').each(function (index, item) {
+        row.push(item.value);
+      });
+      projectTableDate.push(row);
+    });
+    //移除最后一行带“+”的数据
+    projectTableDate.pop();
+    var IsPass = false;
+    for (var i = 0; i < projectTableDate.length; i++) {
+      if (projectTableDate[0][0].length == 0 || projectTableDate[0][1].length == 0) {
+        IsPass = true;
+      }
+    }
+    if (IsPass) {
+      swal(
+        {
+          title: "警告",
+          text: "请填写必填项",
+          type: "error",
+          // timer: 1500
+        })
+    } else {
+      var formData = new FormData();
+      formData.append("project_id", project_id);
+      // formData.append("project_table_data", JSON.stringify(projectTableDate));
+      formData.append("project_table_data", projectTableDate);
+      $.ajax({
+        type: "POST",
+        url: "{% url 'AddTask' %}",
+        data: formData,
+        processData: false,
+        contentType: false,
+        cache: false,
+        timeout: 100000,
+        success: function (response) {
+          response = JSON.parse(response);  // 临时文件
+          if (response.status.success == true) {
+            //关闭“任务添加窗口”
+            $("#showAddTaskModal").modal('hide');
+            swal(
+              {
+                title: "成功",
+                text: "成功删除此项任务",
+                type: "success",
+                timer: 1500
+              });
+            // 刷新导航
+            RefreshNavigation();
+          } else {
+            swal(
+              {
+                title: "成功",
+                text: "删除此项任务失败",
+                type: "error",
+                // timer: 1500
+              })
+          }
+        },
+        error: function (e) {
+          swal(
+            {
+              title: "警告！",
+              text: "服务器加载异常",
+              type: "error",
+              // timer: 1500
+            });
+        }
+      })
+    }
+
+  });
+
+  //新增任务"清除"按钮
+  $("#onlineEditingClearTable").click(function () {
+    var tableHtml = "<tr>\n" +
+      "            <td><input type=\"text\"></td>\n" +
+      "            <td><input type=\"text\"></td>\n" +
+      "            <td><input type=\"text\"></td>\n" +
+      "            <td style=\"text-align: center\">\n" +
+      "              <button onclick=\"devareTr(this)\">-</button>\n" +
+      "            </td>\n" +
+      "          </tr>\n" +
+      "          <tr id=\"currentTr\">\n" +
+      "            <td><b class=\"necessary\">*表示必填项</b></td>\n" +
+      "            <td></td>\n" +
+      "            <td></td>\n" +
+      "            <td style=\"text-align: center\">\n" +
+      "              <button onclick=\"addNewRow()\">+</button>\n" +
+      "            </td>\n" +
+      "          </tr>";
+    $("#onlieEditingTable tbody").html(tableHtml);
+    TdFocus();
+  });
+
+  //删除行
+  function devareTr(obj) {
+    //   通过this找到父级元素节点
+    var tr = obj.parentNode.parentNode;
+    //找到表格
+    var tbody = tr.parentNode;
+    //删除行
+    tbody.removeChild(tr);
+  }
+
+  //新增任务中的选择工程师, input框的鼠标聚焦事件
+  function TdFocus() {
+    $("#onlieEditingTable > tbody > tr:nth-child(n) > td:nth-child(3) > input[type=text]").focus(function () {
+      //给表格中的第三列去除类
+      $("#onlieEditingTable > tbody > tr:nth-child(n) > td:nth-child(3) > input[type=text]").removeClass("InputTd");
+      //给当前的第三例添加类
+      $(this).addClass("InputTd");
+      //将table清空
+      $("#SearchMemberTable tbody").html("");
+      //将输入框的值清空
+      $("#SearchMemberText").val("");
+      //隐藏table
+      $('#SearchMemberTable').css('display', "None");
+      //设定弹出框title
+      $("#SelectMemberTitle")[0].innerText = "选择项目人员";
+      //显示"选择人员"框
+      $("#managerSelectMemberModel").modal('show');
+      //隐藏分页框
+      $("#M-box-div").css("display", "none");
+    });
+  }
+
+  //编辑处的添加参与工程师
+  $("#edit_task_enr").focus(function () {
+    //将table清空
+    $("#SearchMemberTable tbody").html("");
+    //将输入框的值清空
+    $("#SearchMemberText").val("");
+    //隐藏table
+    $('#SearchMemberTable').css('display', "None");
+    //设定弹出框title
+    $("#SelectMemberTitle")[0].innerText = "添加项目工程师";
+    //显示"选择人员"框
+    $("#managerSelectMemberModel").modal('show');
+    //隐藏分页框
+    $("#M-box-div").css("display", "none");
+  });
+
+  var SelectDit = new Array();
+  var cpLock = true;
+  $("#SearchMemberText").on('compositionstart', function () {
+    cpLock = false;
+  });
+  $("#SearchMemberText").on('compositionend', function () {
+    cpLock = true;
+  });
+  //搜索框的输入事件
+  $("#SearchMemberText").on("input", function () {
+    var member_type = "";
+    if ($("#SelectMemberTitle").text() == "选择项目人员") {
+      SelectDit = $(".InputTd").val().length > 0 ? $(".InputTd").val().split(",") : new Array();
+      member_type = "项目组成员";
+    } else if ($("#SelectMemberTitle").text() == "添加项目工程师") {
+      SelectDit = $("#edit_task_enr").val().length > 0 ? $("#edit_task_enr").val().split(",") : new Array();
+      member_type = "项目组成员";
+    }
+    setTimeout(function () {
+      if (cpLock) {
+        //获取搜索的关键字
+        var searchText = $("#SearchMemberText").val();
+
+        if (searchText.trim().length > 0) {
+          var formData = new FormData();
+          formData.append("member_type", member_type);
+          formData.append("key_word", searchText);
+          $.ajax({
+            type: "POST",
+            url: "{% url 'FliterUserName' %}",
+            data: formData,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 100000,
+            success: function (response) {
+              response = JSON.parse(response);  // 临时文件
+              if (response.status.success == true) {
+                var pageCount = 4; //每页显示的条数
+                $("#SearchMemberTable tbody").html("");
+                //显示第一页
+                for (var i = 0; i < pageCount && i < response.data.length; i++) {
+                  var isChecked = false;
+                  if (SelectDit.indexOf(response.data[i].fields.nick_name) > -1) {
+                    //是否已经选中
+                    isChecked = true;
+                  }
+                  SelectMemberAddNewRow(i, response, isChecked);
+                }
+                // SingleCheckBox();
+                //绑定CheckBox的改变事件
+                BindCheckBoxChange();
+                //显示结果table
+                $('#SearchMemberTable').css('display', "");
+                //显示分页框
+                $("#M-box-div").css("display", "");
+                //分页
+                $('#M-box-div').pagination({
+                  mode: 'fixed',  //fixed固定数量模式
+                  totalData: response.data.length,  //数据总条数
+                  pageCount: Math.ceil(response.data.length / pageCount),  //总页数
+                  isHide: true,  //总页数为0或1时隐藏分页控件
+                  callback: function (api) {
+                    //清空table
+                    $("#SearchMemberTable tbody").html("");
+                    var currentPageIndex = api.getCurrent();  //当前页面index
+                    for (var i = (currentPageIndex - 1) * pageCount; (currentPageIndex - 1) * pageCount <= i && i < currentPageIndex * pageCount && i < response.data.length; i++) {
+                      var isChecked = false;
+                      if (SelectDit.indexOf(response.data[i].fields.nick_name) > -1) {
+                        //是否已经选中
+                        isChecked = true;
+                      }
+                      SelectMemberAddNewRow(i, response, isChecked);
+                    }
+                    //绑定CheckBox的改变事件
+                    BindCheckBoxChange();
+                    //显示结果table
+                    $('#SearchMemberTable').css('display', "");
+                  }
+                });
+              } else {
+                //如果response.status.success返回的是false 表示后台处理出问题
+                swal(
+                  {
+                    title: "加载失败",
+                    text: response.status.msg,
+                    type: "error",
+                    // timer: 1500
+                  })
+              }
+            },
+            error: function (e) {
+              swal(
+                {
+                  title: "警告！",
+                  text: "服务器加载异常",
+                  type: "error",
+                  // timer: 1500
+                })
+            }
+          });
+        }
+      }
+    }, 1);
+  });
+
+  //在“新增任务”弹出框中添加新行
+  function addNewRow() {
+    var newLine = "          <tr>\n" +
+      "            <td><input type=\"text\"></td>\n" +
+      "            <td><input type=\"text\"></td>\n" +
+      "            <td><input type=\"text\"  readonly=\"readonly\"></td>\n" +
+      "            <td style=\"text-align: center\">\n" +
+      "              <button onclick=\"devareTr(this)\" >-</button>\n" +
+      "            </td>\n" +
+      "          </tr>\n"
+    $("#currentTr").before(newLine);
+    TdFocus();
+  }
+
+
+  //绑定CheckBox的改变事件实现实时的统计人员
+  function BindCheckBoxChange() {
+    //checkbox
+    $("#SearchMemberTable  input[type=checkbox]").change(function () {
+      //选择的人员名
+      var name = $(this).parent().parent()[0].textContent;
+      if ($(this)[0].checked == true) {
+        if (SelectDit.indexOf(name) == -1) {
+          SelectDit.push(name);
+        }
+      } else {
+        if (SelectDit.indexOf(name) > -1) {
+          SelectDit.remove(name);
+        }
+      }
+      var Text = SelectDit.join(",");
+      //将选中的项目组成员添加到文本框中
+      if ($("#SelectMemberTitle").text() == "选择项目人员") {
+        $(".InputTd").val(Text);
+      } else if ($("#SelectMemberTitle").text() == "添加项目工程师") {
+        $("#edit_task_enr").val(Text);
+      }
+    });
+
+  }
+
+
+  //向经理搜索或者项目组成员搜索添加新行
+  function SelectMemberAddNewRow(i, response, isChecked) {
+    var addtr = "<tr><td>";
+    addtr += response.data[i].fields.nick_name;
+    addtr += "</td><td><input   type=\"checkbox\" ";
+    addtr += isChecked ? "checked=" + isChecked : "";
+    addtr += "></td></tr>";
+    $("#SearchMemberTable tbody").append(addtr);
+  }
+
+</script>
+{% endblock %}
+

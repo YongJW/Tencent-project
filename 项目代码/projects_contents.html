@@ -1,0 +1,124 @@
+{% extends 'index.html' %}
+<head>
+  <meta charset="UTF-8">
+  <title>项目浏览</title>
+  {% block js_and_css %}
+  <link rel="stylesheet" href="static/project_process/css/communal.css">
+  <link rel="stylesheet" href="static/project_process/component/pagination/pagination.css">
+  <link rel="stylesheet" href="static/project_process/component/bootstrap-3.3.7-dist/css/bootstrap.css">
+  <link rel="stylesheet" href="static/project_process/css/projects_contents.css">
+  <script src="static/project_process/js/jquery-3.2.1.js"></script>
+  <script src="static/project_process/component/pagination/jquery.pagination.js"></script>
+  <script src="static/project_process/component/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+  <script src="static/project_process/js/projects_contents.js"></script>
+  <script src="static/project_process/js/mock.js"></script>
+  <script src="static/project_process/js/my_mock.js"></script>
+  {% endblock %}
+</head>
+{% block div_banner %}
+<body>
+<div class="main-div">
+  <div class="above">
+    <span class="txt">项目导航</span>
+  </div>
+  <div class="below-div">
+    <div class="left choose-tasks">
+      <div class="job-navigation">项目导航</div>
+      <ul>
+        <li data-src="static/project_process/component/projects_contents/projects_contents_table.html" class="active">
+          我的项目
+        </li>
+      </ul>
+    </div>
+    <div class="right iframe-div table-style">
+      <iframe id="iframe-table" class="iframe-class"
+              src="static/project_process/component/projects_contents/projects_contents_table.html"
+              frameborder="0" scrolling="auto" onload="onMyFrameLoad()"></iframe>
+    </div>
+  </div>
+</div>
+</body>
+{% endblock %}
+{% block add_other %}
+<script type="text/javascript">
+
+  $(function () {
+
+  });
+
+  //监听iframe :当iframe加载完毕后的onload函数
+  function onMyFrameLoad() {
+    // iframe加载初始化的时候，请求数据填充表格
+    $.ajax({
+      type: "POST",
+      url: "{% url 'ProjectsContents' %}",
+      processData: false,
+      contentType: false,
+      cache: false,
+      timeout: 100000,
+      success: function (response) {
+        response = JSON.parse(response);  // 临时文件
+        //判断是否返回的是正确状态
+        if (response.status.success == true) {
+          //每页显示的条数
+          var pageCount = 4;
+          //循环遍历ajax请求到的数据填充表格
+          for (var i = 0; i < 1 * pageCount && i < response.data.length; i++) {
+            addnewRow(i, response);
+          }
+
+          //分页
+          $("#iframe-table").contents().find('#projects-contents-M-box-div').pagination({
+            mode: 'fixed',  //fixed固定数量模式
+            totalData: response.data.length,  //数据总条数
+            pageCount: Math.ceil(response.data.length / pageCount),  //总页数
+            isHide: true,  //总页数为0或1时隐藏分页控件
+            callback: function (api) {
+              //清空table 中的tbody
+              $("#iframe-table").contents().find("table tbody").html("");
+              //当前页面index
+              var currentPageIndex = api.getCurrent();
+              //循环遍历ajax请求到的数据填充表格
+              for (var i = (currentPageIndex - 1) * pageCount; (currentPageIndex - 1) * pageCount <= i && i < currentPageIndex * pageCount && i < response.data.length; i++) {
+                addnewRow(i, response);
+              }
+            }
+          });
+        } else {
+          //如果response.status.success返回的是false 表示后台处理出问题
+          swal(
+            {
+              title: "加载失败",
+              text: response.status.msg,
+              type: "error",
+              // timer: 1500
+            })
+        }
+      },
+      error: function (e) {
+        swal(
+          {
+            title: "警告！",
+            text: "服务器加载异常",
+            type: "error",
+            // timer: 1500
+          })
+      }
+    });
+  }
+
+  function addnewRow(i, response) {
+    var index = i + 1;
+    var newRow = " <tr><td >" + index + "</td>" +
+      "<td><a  target=\"_parent\" href=\"../../../../all_task_enr.html?project_id=" + response.data[i].fields.project_id + "&project_name=" + response.data[i].fields.project_name + "\">" + response.data[i].fields.project_serials + "</a></td>" +
+      "<td title=" + response.data[i].fields.project_name + ">" + response.data[i].fields.project_name + "</td>" +
+      "<td >" + response.data[i].fields.project_type + "</td>" +
+      "<td >" + response.data[i].fields.project_man + "</td>" +
+      "<td class=\"project-status\">" + response.data[i].fields.project_status + "</td>";
+    $("#iframe-table").contents().find("table tbody").append(newRow);
+  }
+
+
+</script>
+{% endblock %}
+

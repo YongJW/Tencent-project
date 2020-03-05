@@ -1,18 +1,17 @@
 
-.iframe-class {
+.iframe-class{
   width: 100%;
   height: 100%;
   /*background-color: chartreuse;*/
 }
-
-.left {
+.left{
   float: left;
   width: 20%;
   height: 100%;
   /*background-color: cyan;*/
 }
 
-.right {
+.right{
   float: right;
   width: 80%;
   height: 100%;
@@ -20,7 +19,7 @@
 
 
 /*任务导航栏*/
-.job-navigation {
+.job-navigation{
   margin-top: 15px;
   margin-left: 40px;
   padding: 5px;
@@ -29,19 +28,19 @@
 }
 
 /*点击li*/
-.active {
+.active{
   background-color: #00a0e9;
   color: #fff;
 }
 
-/*.choose-tasks ul {*/
+/*.choose-tasks ul{*/
 /*  list-style: none;*/
 /*  line-height: 30px;*/
 /*}*/
-
-/*.choose-tasks li {*/
+/*.choose-tasks li{*/
 /*  padding-left: 30px;*/
 /*}*/
+
 
 .choose-tasks ul{
   list-style: none;
@@ -54,34 +53,23 @@
   padding-left: 45px;
 }
 
-.manager-admin-file-update {
-  display: inline;
+#InputFile{
+  height: auto;
+  width: auto;
 }
 
-.manager-admin-input-file {
-  width: 70%;
-  margin-bottom: 2px;
-  display: inline;
-}
-
-/*style="width:70%;margin-bottom:2px;display:inline"*/
 .div-buttons {
   text-align: center;
 }
 
-.SearchMeberTable input[type=checkbox] {
-  /*style=" width: 15px; height: 15px;*/
-  width: 15px;
-  height: 15px;
-}
-
-.SearchMeberTable td, th {
-  text-align: center;
-  margin: auto;
-}
 
 /*table、div文字不换行*/
 .table-style {
+  word-break: keep-all;
+  white-space: nowrap;
+}
+
+.edit_task_table {
   word-break: keep-all;
   white-space: nowrap;
 }
@@ -117,3 +105,6 @@
   /*//函数计算宽度*/
 }
 
+/*#edit_task_table tr td:nth-child(1) {*/
+/*  width: 200px;*/
+/*}*/

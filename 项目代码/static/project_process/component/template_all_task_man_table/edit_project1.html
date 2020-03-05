@@ -8,19 +8,20 @@
   <link rel="stylesheet" href="../pagination/pagination.css">
   <script src="../../js/jquery-3.2.1.js"></script>
   <script src="../pagination/jquery.pagination.js"></script>
+
 </head>
 <body>
 <div class="table-div">
   <table class="table-style" id="editTable">
     <thead>
     <tr>
-      <th>序号</th>
+      <th>编号</th>
       <th>任务名</th>
       <th>当前状态</th>
       <th>说明文件</th>
       <th>参与工程师</th>
       <th>文件审核</th>
-      <th>任务编辑</th>
+      <th>任务编辑/删除</th>
     </tr>
     </thead>
     <tbody>
@@ -29,7 +30,7 @@
   </table>
 
 </div>
-<div class="M-box m-style" id="Edit-M-box-div" style="position: fixed;bottom: 10%;right: 40%"></div>
-
+<div class="M-box m-style" id="M-box-div" style="position: fixed;bottom: 5%;right: 40%"></div>
+<button style="position: fixed;bottom: 5%;right: 10%"  class="btn btn-primary" id="addNewTask">添加任务</button>
 </body>
 </html>

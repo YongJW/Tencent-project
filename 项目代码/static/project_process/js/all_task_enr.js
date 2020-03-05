@@ -17,11 +17,11 @@ function updateBtn(taskStatus, hidden_project_id,hidden_task_id) {
   $("#updateModalProjectId").val(hidden_project_id);
   $("#updataModalTaskId").val(hidden_task_id);
   if (taskStatus == "进行中") {
-    $("#updates_status").val(1);
+    $("#updates_status").val("进行中");
   } else if (taskStatus == "已完成") {
-    $("#updates_status").val(2);
+    $("#updates_status").val("已完成");
   } else if (taskStatus == "未启动") {
-    $("#updates_status").val(3);
+    $("#updates_status").val("未启动");
   }
   $("#InputFile").val("");  //将上传文件处清空
   //打开状态/文件更新窗口

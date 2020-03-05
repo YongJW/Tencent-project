@@ -9,21 +9,36 @@
 <body>
 <div class="table-div">
   <div class="add-project-div">
-    <table  class="table-style" id="newProjectTable">
+    <table class="table-style" id="newProjectTable">
       <thead>
-      <tr><th colspan="2" style="text-align: center">项目编辑</th></tr>
+      <tr>
+        <th colspan="2" style="text-align: center">项目编辑</th>
+      </tr>
       </thead>
       <tbody>
       <tr>
-        <td>项目名称：<input type="text" id="projectName"></td>
-        <td>项目编号：<input type="text" id="projectNumber"></td>
+        <td><b class="necessary">*</b>项目名称：<input type="text" id="projectName"></td>
+        <td><b class="necessary">*</b>项目编号：&nbsp;&nbsp;&nbsp;<input type="text" id="projectNumber"></td>
       </tr>
       <tr>
-        <td>项目经理：<input type="text" id="managerInput"><input type="hidden" id="managerInputHidden"></td>
-        <td>项目组成员：<input type="text" id="membersInput"><input type="hidden" id="memberInputHidden"></td>
+        <td><b class="necessary">*</b>项目经理：<input readonly="readonly" type="text" id="managerInput"><input type="hidden"
+                                                                                       id="managerInputHidden"></td>
+        <td><b class="necessary">*</b>项目组成员：<input readonly="readonly" type="text" id="membersInput"><input type="hidden"
+                                                                                        id="memberInputHidden"></td>
       </tr>
       <tr>
-        <td colspan="2" style="text-align: right"><button id="nextBtn">下一步</button></td>
+        <td><div><b class="necessary">*</b>项目状态:&nbsp;&nbsp;&nbsp;<select id="project_type" class="form-control" style="width: 52%;height: 25px;">
+          <option value="进行中">进行中</option>
+          <option value="已完成">已完成</option>
+          <option value="未启动">未启动</option>
+        </select><b class="necessary">*表示必填项</b></div></td>
+        <td>项目类型:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="project_status">
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" style="text-align: right">
+          <button id="nextBtn" class="btn btn-primary">下一步</button>
+        </td>
       </tr>
       </tbody>
     </table>

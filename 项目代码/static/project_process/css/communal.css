@@ -177,12 +177,55 @@ button {
   width: 90px;
 }
 
-/*项目经理页面固定宽度*/
-#all_my_projects_table tr th:nth-child(1),
-#all_my_projects_table tr td:nth-child(1) {
+/*所有项目页面固定table的宽度*/
+#projects_contents_table tr th:nth-child(1),
+#projects_contents_table tr td:nth-child(1) {
   width: 30px;
 }
+
+#projects_contents_table tr th:nth-child(4),
+#projects_contents_table tr td:nth-child(4) {
+  width: 60px;
+}
+
+#projects_contents_table tr th:nth-child(5),
+#projects_contents_table tr td:nth-child(5) {
+  width: 60px;
+}
+#projects_contents_table tr th:nth-child(6),
+#projects_contents_table tr td:nth-child(6) {
+  width: 60px;
+}
+
+/*所有任务-项目经理 任务管理 固定宽度*/
+#editTable tr th:nth-child(1),
+#editTable tr td:nth-child(1) {
+  width: 30px;
+}
+#editTable tr th:nth-child(6),
+#editTable tr td:nth-child(6) {
+  width: 70px;
+}
+#editTable tr th:nth-child(7),
+#editTable tr td:nth-child(7) {
+  width: 120px;
+}
+
+/*项目经理页-》我的项目*/
+#all_my_projects_table tr th:nth-child(1),
+#all_my_projects_table tr td:nth-child(1){
+ width: 30px;
+}
+#all_my_projects_table tr th:nth-child(6),
+#all_my_projects_table tr td:nth-child(6){
+  width: 60px;
+}
+
 /*隐藏分页的跳转*/
 #M-box-div .my_jump_class{
   display: none;
+}
+
+.necessary{
+  color: red;
 }

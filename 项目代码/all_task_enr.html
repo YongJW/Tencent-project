@@ -19,19 +19,19 @@
 </head>
 {% block div_banner %}
 <body>
-<input type="hidden" id="userId" value="null">
 <div class="main-div">
   <div class="above">
-    <span class="txt" id="projectInfo"><input type="hidden" value="1" id="project_id_hidden">腾讯IT办公网新建项目</span>
+    <span class="txt" id="projectInfo">腾讯IT办公网新建项目</span>
+    <input type="hidden" id="project_id" value="123">
   </div>
   <div class="below-div">
     <div class="left choose-tasks">
       <div class="job-navigation">任务导航</div>
       <ul>
-        <li data-src="static/project_process/component/template-alltasks-enr-table/all_tasks_table.html" class="active">
+        <li data-src="static/project_process/component/template-alltasks-enr-table/all_tasks_table.html" >
           所有任务
         </li>
-        <li data-src="static/project_process/component/template-alltasks-enr-table/my_task_table.html">我的任务</li>
+        <li data-src="static/project_process/component/template-alltasks-enr-table/my_task_table.html" class="active">我的任务</li>
         <li data-src="static/project_process/component/template-alltasks-enr-table/progress_task_table.html">进行中任务</li>
         <li data-src="static/project_process/component/template-alltasks-enr-table/leave_task_table.html">已完成任务</li>
         <li data-src="static/project_process/component/template-alltasks-enr-table/nostart_task_table.html">未启动任务</li>
@@ -39,7 +39,7 @@
     </div>
     <div class="right iframe-div table-style">
       <iframe id="iframe-table" class="iframe-class"
-              src="static/project_process/component/template-alltasks-enr-table/all_tasks_table.html"
+              src="static/project_process/component/template-alltasks-enr-table/my_task_table.html"
               frameborder="0" scrolling="auto" onload="onMyFrameLoad()"></iframe>
     </div>
   </div>
@@ -63,9 +63,9 @@
             <input type="hidden" value="" id="updataModalTaskId">
             状态更新：
             <select id="updates_status" class="form-control">
-              <option value="1">进行中</option>
-              <option value="2">已完成</option>
-              <option value="3">未启动</option>
+              <option value="进行中">进行中</option>
+              <option value="已完成">已完成</option>
+              <option value="未启动">未启动</option>
             </select>
           </div>
           <div class="form-group">
@@ -87,7 +87,15 @@
 <script type="text/javascript">
 
   $(function () {
-
+    if (location.search.length > 0 && location.search.indexOf("&") > -1) {
+      //设置项目名称和隐藏域的项目id
+      var url_str = location.search.substring(1);
+      var paras = url_str.split("&");
+      var project_id = paras[0].split("=")[1];
+      var project_name = decodeURIComponent(paras[1].split("=")[1]);
+      $("#projectInfo").html(project_name);
+      $("#project_id").val(project_id);
+    }
   });
   // 用于保存分页的当前页面默认为第一页
   var PageIndex = 1;
@@ -100,7 +108,9 @@
     var formData = new FormData();
 
     formData.append("choose_state", currentChooseText);
-    formData.append("project_id", "1");
+    var project_id = $("#project_id").val();
+    //隐藏域的project_id
+    formData.append("project_id", project_id);
     // iframe加载初始化的时候，请求数据填充表格
     $.ajax({
       type: "POST",
@@ -197,7 +207,7 @@
         //获取任务名  用于弹出框显示
         var taskText = $(this).parent().parent()[0].cells[1].innerText;
         //获取隐藏域的project_id值
-        var hidden_project_id = $("#project_id_hidden").val();
+        var hidden_project_id = $("#project_id").val();
         //获取隐藏域的task_id
         var hidden_task_id = $(this).parent().parent().find("input[type=hidden]")[0].value;
         if (index % 2 == 0) {
@@ -374,9 +384,10 @@
   function RefreshNavigation() {
     //手动触发刷新页面
     //获取点击后切换的url
-    var url = $(".choose-tasks ul li").attr("data-src");
+    var url = $(".choose-tasks ul li.active").attr("data-src");
     //切换iframe的url
     $("#iframe-table").attr("src", url);
+
     //手动刷新页面后过一段时间跳转到指定页面  PageIndex页
     setTimeout(function () {
       //跳转到指定页
