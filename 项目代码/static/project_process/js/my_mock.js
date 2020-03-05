@@ -18,6 +18,8 @@ Mock.mock("{% url 'FileVerify' %}",{"data":[],"status":{"success":true,"msg":"xx
 Mock.mock("{% url 'AddTask' %}",{"data":[],"status":{"success":true,"msg":"xxxx"}});
 Mock.mock("{% url 'OnlineSubmitNewProject' %}",{"data":[],"status":{"success":true,"msg":"xxxx"}});
 Mock.mock("{% url 'UpFileSubmitNewProject' %}",{"data":[],"status":{"success":true,"msg":"xxxx"}});
+//获取当前最大的任务id
+Mock.mock("{% url 'AddRequestTaskId' %}",{"data":12,"status":{"success":true,"msg":"xxxx"}});
 Mock.mock('http://www.bai.com',{'name|3':'lz','age|20-60':25});
 Mock.mock('http://www.bai.com',{'name|3':'lz','age|20-60':25});
 Mock.mock('http://www.bai.com',{'name|3':'lz','age|20-60':25});

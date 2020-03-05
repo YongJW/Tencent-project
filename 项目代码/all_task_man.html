@@ -248,7 +248,9 @@
     $("#iframe-table").contents().find("#addNewTask").click(function () {
       // 新增任务中的选择工程师, input框的鼠标聚焦事件
       TdFocus();
-      //在窗口加载初期
+      //在窗口加载初期，请求获取当前项目中最大的任务id
+      getMaxTaskId();
+      //打开模态框
       $("#showAddTaskModal").modal('show');
     });
     //获取当前点击的状态名称
@@ -326,6 +328,51 @@
           })
       }
     });
+  }
+
+  //在窗口加载初期，请求获取当前项目中最大的任务id
+  function getMaxTaskId() {
+    var result = 0;
+    var formData = new FormData();
+    var project_id = $("#project_id").val();
+    formData.append("project_id", project_id);
+    $.ajax({
+      type: "POST",
+      url: "{% url 'AddRequestTaskId' %}",
+      data: formData,
+      processData: false,
+      contentType: false,
+      cache: false,
+      timeout: 100000,
+      success: function (response) {
+        response = JSON.parse(response);  // 临时文件
+        if (response.status.success == true) {
+          var currentMaxTaskId = response.data;
+          //给第一个input赋值
+          $("#onlieEditingTable input:text:eq(0)").val(currentMaxTaskId + 1);
+          result = currentMaxTaskId;
+        } else {
+          //如果response.status.success返回的是false 表示后台处理出问题
+          swal(
+            {
+              title: "加载失败",
+              text: response.status.msg,
+              type: "error",
+              // timer: 1500
+            })
+        }
+      },
+      error: function (e) {
+        swal(
+          {
+            title: "警告！",
+            text: "服务器加载异常",
+            type: "error",
+            // timer: 1500
+          })
+      }
+    });
+    return result;
   }
 
   //填充行的数据
@@ -798,8 +845,32 @@
       "            </td>\n" +
       "          </tr>";
     $("#onlieEditingTable tbody").html(tableHtml);
+    //给第一个input框赋值
+    getMaxTaskId();
+    //给工程师inpup框注册事件
     TdFocus();
   });
+
+  //在“新增任务”弹出框中添加新行
+  function addNewRow() {
+    var index = $("#onlieEditingTable tbody").find("tr").length - 1;
+    var previousTaskId = $("#onlieEditingTable").find("tr")[index].cells[0].children[0].value;
+    // undefined表示点击删除按钮全部删除完毕的时候
+    if (previousTaskId == undefined) {
+      getMaxTaskId();
+    }
+    var current = parseInt(previousTaskId) + 1;
+    var newLine = "          <tr>\n" +
+      "            <td><input type=\"text\" value=" + current + "></td>\n" +
+      "            <td><input type=\"text\"></td>\n" +
+      "            <td><input type=\"text\"  readonly=\"readonly\"></td>\n" +
+      "            <td style=\"text-align: center\">\n" +
+      "              <button onclick=\"devareTr(this)\" >-</button>\n" +
+      "            </td>\n" +
+      "          </tr>\n";
+    $("#currentTr").before(newLine);
+    TdFocus();
+  }
 
   //删除行
   function devareTr(obj) {
@@ -954,20 +1025,6 @@
       }
     }, 1);
   });
-
-  //在“新增任务”弹出框中添加新行
-  function addNewRow() {
-    var newLine = "          <tr>\n" +
-      "            <td><input type=\"text\"></td>\n" +
-      "            <td><input type=\"text\"></td>\n" +
-      "            <td><input type=\"text\"  readonly=\"readonly\"></td>\n" +
-      "            <td style=\"text-align: center\">\n" +
-      "              <button onclick=\"devareTr(this)\" >-</button>\n" +
-      "            </td>\n" +
-      "          </tr>\n"
-    $("#currentTr").before(newLine);
-    TdFocus();
-  }
 
 
   //绑定CheckBox的改变事件实现实时的统计人员
