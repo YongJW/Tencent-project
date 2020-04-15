@@ -1,11 +1,10 @@
 {% extends 'index.html' %}
 <head>
   <meta charset="UTF-8">
-  <title>所有的任务页面-工程师</title>
+  <title>配置对比/核查</title>
   {% block js_and_css %}
   <link rel="stylesheet" href="static/project_process/css/communal.css">
   <link rel="stylesheet" href="static/project_process/component/pagination/pagination.css">
-  <link rel="stylesheet" href="static/project_process/css/all_task_enr.css">
   <link rel="stylesheet" href="static/project_process/component/sweetalert/sweetalert.css">
   <link rel="stylesheet" href="static/project_process/component/bootstrap-3.3.7-dist/css/bootstrap.css">
   <script src="static/project_process/js/jquery-3.2.1.js"></script>
@@ -25,62 +24,56 @@
     <input type="hidden" id="project_id" value="123">
   </div>
   <div class="below-div">
-    <div class="left choose-tasks">
-      <div class="job-navigation">任务导航</div>
-      <ul>
-        <li data-src="static/project_process/component/template-alltasks-enr-table/all_tasks_table.html">
-          所有任务
-        </li>
-        <li data-src="static/project_process/component/template-alltasks-enr-table/my_task_table.html" class="active">
-          我的任务
-        </li>
-        <li data-src="static/project_process/component/template-alltasks-enr-table/progress_task_table.html">进行中任务</li>
-        <li data-src="static/project_process/component/template-alltasks-enr-table/leave_task_table.html">已完成任务</li>
-        <li data-src="static/project_process/component/template-alltasks-enr-table/nostart_task_table.html">未启动任务</li>
-      </ul>
-    </div>
-    <div class="right iframe-div table-style">
-      <iframe id="iframe-table" class="iframe-class"
-              src="static/project_process/component/template-alltasks-enr-table/my_task_table.html"
-              frameborder="0" scrolling="auto" onload="onMyFrameLoad()"></iframe>
-    </div>
-  </div>
-</div>
-
-
-<!--点击设置按钮展示“状态/文件更新”弹出窗口-->
-<div id="showLoadingImgModel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel">
-  <div class="modal-dialog modal-sm" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">状态/文件更新</h4>
-      </div>
-      <div class="modal-body">
-        <form action="">
-          <div class="form-group">
-            <input type="hidden" value="" id="updateModalProjectId">
-            <input type="hidden" value="" id="updataModalTaskId">
-            状态更新：
-            <select id="updates_status" class="form-control">
-              <option value="进行中">进行中</option>
-              <option value="已完成">已完成</option>
-              <option value="未启动">未启动</option>
-            </select>
-          </div>
-          <div class="form-group">
-            文件更新：
-            <input type="file" id="InputFile">
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
-        <button type="button" class="btn btn-primary" id="StateConfirmBtn">确认</button>
-      </div>
-    </div>
+    <table class="table">
+      <thead>
+      <tr>
+        <th colspan="2" style="text-align: center">配置对比工具</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><b class="necessary">*</b>标题名称&nbsp;&nbsp;&nbsp;&nbsp;：<input type="text" id="titleName" style="width: 62%">
+        </td>
+        <td><b class="necessary">*</b>对比场景：<select id="contrastScenario" style="width: 39%;height: 25px;">
+          <option value="create">新建项目-核查配置</option>
+          <option value="change">配置变更-核查配置</option>
+        </select></td>
+      </tr>
+      <tr>
+        <td><b class="necessary">*</b>输出模式&nbsp;&nbsp;&nbsp;&nbsp;：<select id="outputMode"
+                                                                           style="width: 62%;height: 25px;">
+          <option value="all">整体批量输出(所有设备生成一个html页面)</option>
+          <option value="single">单台批量输出(每台设备生成一个html页面)</option>
+        </select></td>
+        <td><b class="necessary">*</b>对比命令：<input type="text" id="contrastCommand"></td>
+      </tr>
+      <tr>
+        <td><b class="necessary">*</b>对比前文件：<input type="file" id="documentsBeforeComparison"
+                                                   class="manager-admin-input-file" style="display:inline"></td>
+        <td>排除正则&nbsp;：<input type="text" id="excludeRegularity"></td>
+      </tr>
+      <tr>
+        <td><b class="necessary">*</b>对比后文件：<input type="file" id="documentsAfterComparison"
+                                                   class="manager-admin-input-file" style="display:inline"></td>
+        <td style="text-align: center">
+          <button class="btn btn-primary">保存正则用例</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button
+                class="btn btn-primary">获取正则用例
+        </button>&nbsp;&nbsp;&nbsp;<b class="necessary">*</b>表示必填项
+        </td>
+      </tr>
+      <!--      <tr >-->
+      <!--        <td style="text-align: right" colspan="2"><b class="necessary">*</b>表示必填项&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>-->
+      <!--      </tr>-->
+      <tr>
+        <td style="text-align: center">
+          <button class="btn btn-primary">&nbsp;&nbsp;&nbsp;提交&nbsp;&nbsp;&nbsp;</button>
+        </td>
+        <td style="text-align: center">
+          <button class="btn btn-primary">&nbsp;&nbsp;&nbsp;取消&nbsp;&nbsp;&nbsp;</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 </body>

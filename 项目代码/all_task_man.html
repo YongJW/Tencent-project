@@ -98,7 +98,8 @@
         <table class=" table  table-style " id="edit_task_table">
           <tr>
             <td><b class="necessary">*</b>任务编号:</td>
-            <td><input type="text" id="edit_task_id" disabled="disabled"><input type="hidden" id="edit_task_project_id"></td>
+            <td><input type="text" id="edit_task_id" disabled="disabled"><input type="hidden" id="edit_task_project_id">
+            </td>
           </tr>
           <tr>
             <td><b class="necessary">*</b>任务名:</td>
@@ -381,13 +382,21 @@
       IsCheckString += "<input type=\"hidden\" value=" + response.data[i].fields.up_author_name + ">";
       IsCheckString += "<input type=\"hidden\" value=" + response.data[i].fields.up_time + ">";
       IsCheckString += "<input type=\"hidden\" value=" + response.data[i].fields.verify_file_path + ">";
+      IsCheckString += "<input type=\"hidden\" value=" + response.data[i].fields.verify_file_name + ">";
+    }
+    var td_string = "";
+    if (response.data[i].fields.file_path.length == 0) {
+      td_string = "<td></td>";
+    } else {
+      td_string = "<td title=" + response.data[i].fields.file_path + "><a  href=" + response.data[i].fields.file_path + " download=" + response.data[i].fields.file_name + ">文件下载</a></td>"
     }
     var index = i + 1;
     var newRow = " <tr><td >" + response.data[i].fields.task_id + "</td>" +
       "<td  title=" + response.data[i].fields.task_name + "><input type=\"hidden\" value=" + response.data[i].fields.project_id + "><input type=\"hidden\" value=" + response.data[i].fields.task_id + ">" + response.data[i].fields.task_name + "</td>" +
-      "<td class=\"project-status\">" + response.data[i].fields.task_status + "</td>" +
-      "<td title=" + response.data[i].fields.file_path + "><a  href='' download=" + response.data[i].fields.file_path + ">文件下载</a></td>" +
-      "<td title=" + response.data[i].fields.task_member + ">" + response.data[i].fields.task_member + "</td>" +
+      "<td class=\"project-status\">" + response.data[i].fields.task_status + "</td>";
+    // "<td title=" + response.data[i].fields.file_path + "><a  href=" + response.data[i].fields.file_path + " download=" + response.data[i].fields.file_name + ">文件下载</a></td>" +
+    newRow += td_string;
+    newRow += "<td title=" + response.data[i].fields.task_member + ">" + response.data[i].fields.task_member + "</td>" +
       "      <td>" + IsCheckString + "</td>\n" +
       "      <td><button class=\"btn btn-primary\">编辑</button>&nbsp;&nbsp;&nbsp;<button class=\"btn btn-primary\">删除</button></td>\n" +
       "    </tr>";
@@ -419,7 +428,9 @@
 
           //更新文件
           var verify_file_path = $(this).nextAll()[2].value;
-          $("#verify_file_path").attr("download", verify_file_path);
+          var verify_file_name = $(this).nextAll()[3].value;
+          $("#verify_file_path").attr("download", verify_file_name);
+          $("#verify_file_path").attr("href", verify_file_path);
 
           //打开模态框
           $("#showCheckModel").modal('show');
@@ -466,7 +477,7 @@
           swal(
             {
               title: "删除任务",
-              text: "是否确认删除该项任务",
+              text: "如果删除该任务，当前任务的所有文件将彻底删除，请确认是否确认删除该项任务？",
               type: "warning",
               showCancelButton: true,
               confirmButtonColor: "#39dd17",

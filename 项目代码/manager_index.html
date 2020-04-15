@@ -126,7 +126,7 @@
         <div class="form-group">
           <input type="hidden" value="" id="taskId">
           <lable>&nbsp;&nbsp;模板下载：</lable>
-          <span><a href="" download="my_task_enr.html">任务上传模板.zip</a></span><br>
+          <span><a href="/media/project_process/templete/任务添加模板.xlsx" download="任务添加模板.xlsx">任务添加模板.xlsx</a></span><br>
         </div>
         <div class="form-group manager-admin-file-update">
           <lable><b class="necessary">*</b>模板上传：</lable>
@@ -218,7 +218,6 @@
 {% block add_other %}
 <script type="text/javascript">
   $(function () {
-
   });
   Array.prototype.remove = function (val) {
     var index = this.indexOf(val);
@@ -764,7 +763,7 @@
     projectTableDate.pop();
     var IsPass = false;
     for (var i = 0; i < projectTableDate.length; i++) {
-      if (projectTableDate[0][0].length == 0 || projectTableDate[0][1].length == 0) {
+      if (projectTableDate[i][0].length == 0 || projectTableDate[i][1].length == 0) {
         IsPass = true;
       }
     }
@@ -977,6 +976,9 @@
     return flag;
   }
 
+  function Ac() {
+    $("body > div.main-div > div.below-div > div.left.choose-tasks > ul li:eq(2)").click();
+  }
 </script>
 {% endblock %}
 </html>
