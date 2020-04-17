@@ -1,0 +1,50 @@
+.manager-admin-input-file {
+  width: 70%;
+  margin-bottom: 2px;
+  display: inline;
+}
+
+
+
+#onlieEditingTable tr td:nth-child(1){
+  width: 90%;
+}
+
+#onlieEditingTable input{
+  width: 100%;
+}
+
+#onlieEditingTable thead tr td{
+  text-align: center;
+}
+
+#onlieEditingTable tbody {
+  display: block;
+  height: 200px;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;  /*// 为了滚动顺畅*/
+}
+
+#onlieEditingTable tbody::-webkit-scrollbar {
+  width: 10px;
+  background-color: white;
+}
+
+#onlieEditingTable tbody::-webkit-scrollbar-thumb
+{
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(239, 245, 233, 0.3);
+  background-color: #555;
+}
+
+#onlieEditingTable thead, #onlieEditingTable tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  /*//fixed：固定表格布局*/
+}
+
+#onlieEditingTable thead {
+  width: calc(100% - 10px)
+  /*//函数计算宽度*/
+}

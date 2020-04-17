@@ -1,0 +1,402 @@
+{% extends 'index.html' %}
+<head>
+  <meta charset="UTF-8">
+  <title>配置对比/核查</title>
+  {% block js_and_css %}
+  <link rel="stylesheet" href="static/project_process/css/communal.css">
+  <link rel="stylesheet" href="static/project_process/component/pagination/pagination.css">
+  <link rel="stylesheet" href="static/project_process/component/sweetalert/sweetalert.css">
+  <link rel="stylesheet" href="static/project_process/component/bootstrap-3.3.7-dist/css/bootstrap.css">
+  <link rel="stylesheet" href="static/project_process/css/config_check.css">
+  <script src="static/project_process/js/jquery-3.2.1.js"></script>
+  <script src="static/project_process/component/pagination/jquery.pagination.js"></script>
+  <script src="static/project_process/component/sweetalert/sweetalert-dev.min.js"></script>
+  <script src="static/project_process/component/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+  <script src="static/project_process/js/mock.js"></script>
+  <script src="static/project_process/js/my_mock.js"></script>
+  {% endblock %}
+</head>
+{% block div_banner %}
+<body>
+<div class="main-div">
+  <div class="above">
+    <span class="txt" id="projectInfo">腾讯IT办公网新建项目</span>
+    <input type="hidden" id="project_id" value="123">
+  </div>
+  <div class="below-div">
+    <table class="table">
+      <thead>
+      <tr>
+        <th colspan="2" style="text-align: center">配置对比工具</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><b class="necessary">*</b>标题名称&nbsp;&nbsp;&nbsp;&nbsp;：<input type="text" id="title_name"
+                                                                          style="width: 62%">
+        </td>
+        <td><b class="necessary">*</b>对比场景：<select id="func_mode" style="width: 39%;height: 25px;">
+          <option value="create">新建项目-核查配置</option>
+          <option value="change">配置变更-核查配置</option>
+        </select></td>
+      </tr>
+      <tr>
+        <td><b class="necessary">*</b>输出模式&nbsp;&nbsp;&nbsp;&nbsp;：<select id="output_mode"
+                                                                           style="width: 62%;height: 25px;">
+          <option value="all">整体批量输出(所有设备生成一个html页面)</option>
+          <option value="single">单台批量输出(每台设备生成一个html页面)</option>
+        </select></td>
+        <td><b class="necessary">*</b>对比命令：<input type="text" id="cmd_input"></td>
+      </tr>
+      <tr>
+        <td><b class="necessary">*</b>对比前文件：<input type="file" id="input1"
+                                                   class="manager-admin-input-file" style="display:inline"></td>
+        <td>排除正则&nbsp;：<input type="text" id="exclude_pattern_list" readonly="readonly" value="当前无正则">
+          <input type="hidden" id="hidden_exclude_pattern_list">
+        </td>
+      </tr>
+      <tr>
+        <td><b class="necessary">*</b>对比后文件：<input type="file" id="input2"
+                                                   class="manager-admin-input-file" style="display:inline"></td>
+        <td style="text-align: center">
+          <button class="btn btn-primary" id="save_regular_btn">保存正则用例</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button
+                class="btn btn-primary" id="get_regular_btn">获取正则用例
+        </button>&nbsp;&nbsp;&nbsp;<b class="necessary">*</b>表示必填项
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center">
+          <button class="btn btn-primary" id="Configure_comparison_tool_btn">&nbsp;&nbsp;&nbsp;提交&nbsp;&nbsp;&nbsp;
+          </button>
+        </td>
+        <td style="text-align: center">
+          <button class="btn btn-primary">&nbsp;&nbsp;&nbsp;取消&nbsp;&nbsp;&nbsp;</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!--正则编辑框-->
+<div id="regularEditBox" class="modal fade " tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" align="center">正则编辑框</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table-style table " id="onlieEditingTable">
+          <thead>
+          <tr>
+            <td>正则表达式</td>
+            <td>操作</td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><input type="text"></td>
+            <td style="text-align: center">
+              <button onclick="devareTr(this)" class="btn btn-primary">-</button>
+            </td>
+          </tr>
+          <tr id="currentTr">
+            <td></td>
+            <td style="text-align: center">
+              <button onclick="addNewRow()" class="btn btn-primary">+</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class=" div-buttons modal-footer " style="text-align: center">
+        <!--        <button type="button" class="btn btn-primary" id="onlineEditingConfirmBtn">提交</button>-->
+        <button type="button" class="btn btn-primary" id="onlineEditingClearTable">清除</button>
+        <button type="button" class="btn btn-primary  " data-dismiss="modal">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+{% endblock %}
+{% block add_other %}
+<script type="text/javascript">
+
+  $(function () {
+    // “排除正则”文本框的focus事件，打开正则编辑框
+    $("#exclude_pattern_list").focus(function () {
+      // 每次打开时将表格清空
+      var tableHtml = "<tr id=\"currentTr\">\n" +
+        "            <td></td>\n" +
+        "            <td style=\"text-align: center\">\n" +
+        "              <button onclick=\"addNewRow()\" class=\"btn btn-primary\">+</button>\n" +
+        "            </td>\n" +
+        "          </tr>";
+      $("#onlieEditingTable tbody").html(tableHtml);
+      $("#regularEditBox").modal("show");
+      var regular_list = $("#hidden_exclude_pattern_list").val().split("-spt-");
+      for (var i = 0; i < regular_list.length; i++) {
+        addRegularRow(regular_list[i])
+      }
+    });
+
+    // 在正则编辑框关闭前，将正则条目数量展示在input框中，将正则列表保存在隐藏域
+    $("#regularEditBox").on('hide.bs.modal', function () {
+      var projectTableDate = new Array();
+      $('#onlieEditingTable tbody tr').each(function () {
+        var row = new Array();
+        $(this).find('input').each(function (index, item) {
+          if (item.value.length > 0) {
+            row.push(item.value);
+          }
+        });
+        if (row.length > 0) {
+          projectTableDate.push(row);
+        }
+      });
+      // projectTableDate.pop();
+      projectTableDate = projectTableDate.join("-spt-");
+      $("#hidden_exclude_pattern_list").val(projectTableDate);
+      var regular_len = projectTableDate.split("-spt-").length;
+      if (regular_len > 0) {
+        $("#exclude_pattern_list").val("当前有" + regular_len + "条正则");
+      } else {
+        $("#exclude_pattern_list").val("当前无正则");
+
+      }
+    });
+
+    //保存正则用例
+    $("#save_regular_btn").click(function () {
+      var regular_list = $("#hidden_exclude_pattern_list").val();
+      if (regular_list.length == 0) {
+        swal(
+          {
+            title: "警告",
+            text: "当前无正则用例，请先编辑正则",
+            type: "error",
+            // timer: 1500
+          })
+      } else {
+        var formData = new FormData();
+        formData.append("exclude_pattern_list", regular_list);
+        $.ajax({
+          type: "POST",
+          url: "{% url 'up_pattern' %}",
+          data: formData,
+          processData: false,
+          contentType: false,
+          cache: false,
+          timeout: 100000,
+          success: function (response) {
+            response = JSON.parse(response);  // 临时文件
+            if (response.status.success == true) {
+              swal(
+                {
+                  title: "成功",
+                  text: "保存正则用例",
+                  type: "success",
+                  timer: 1500
+                })
+            } else {
+              //如果response.status.success返回的是false 表示后台处理出问题
+              swal(
+                {
+                  title: "保存正则用例失败",
+                  text: response.status.msg,
+                  type: "error",
+                  // timer: 1500
+                })
+            }
+          },
+          error: function (e) {
+            swal(
+              {
+                title: "警告！",
+                text: "服务器加载异常",
+                type: "error",
+                // timer: 1500
+              })
+          }
+        });
+      }
+    });
+
+    //获取正则用例
+    $("#get_regular_btn").click(function () {
+      $.ajax({
+        type: "POST",
+        url: "{% url 'down_pattern' %}",
+        processData: false,
+        contentType: false,
+        cache: false,
+        timeout: 100000,
+        success: function (response) {
+          response = JSON.parse(response);  // 临时文件
+          if (response.status.success == true) {
+            $("#hidden_exclude_pattern_list").val(response.data.join("-spt-"));
+            $("#exclude_pattern_list").val("当前有" + response.data.length + "条正则");
+            swal(
+              {
+                title: "成功",
+                text: "获取正则用例成功",
+                type: "success",
+                timer: 500
+              })
+          } else {
+            //如果response.status.success返回的是false 表示后台处理出问题
+            swal(
+              {
+                title: "获取正则用例失败",
+                text: response.status.msg,
+                type: "error",
+                // timer: 1500
+              })
+          }
+        },
+        error: function (e) {
+          swal(
+            {
+              title: "警告！",
+              text: "服务器加载异常",
+              type: "error",
+              // timer: 1500
+            })
+        }
+      });
+    });
+
+    //清除正则在线编辑框中的内容
+    $("#onlineEditingClearTable").click(function () {
+      // 每次打开时将表格清空
+      var tableHtml = "<tr>\n" +
+        "            <td><input type=\"text\" value=\"\"></td>\n" +
+        "            <td style=\"text-align: center\">\n" +
+        "              <button onclick=\"devareTr(this)\" class=\"btn btn-primary\">-</button>\n" +
+        "            </td>\n" +
+        "          </tr><tr id=\"currentTr\">\n" +
+        "            <td></td>\n" +
+        "            <td style=\"text-align: center\">\n" +
+        "              <button onclick=\"addNewRow()\" class=\"btn btn-primary\">+</button>\n" +
+        "            </td>\n" +
+        "          </tr>";
+      $("#onlieEditingTable tbody").html(tableHtml);
+    });
+
+    // 配置对比页面的提交按钮的点击事件
+    $("#Configure_comparison_tool_btn").click(function () {
+      var formData = new FormData();
+      // 标题名称
+      var title_name = $("#title_name").val();
+      // 对比场景
+      var func_mode = $("#func_mode").val();
+      // 输出模式
+      var output_mode = $("#output_mode").val();
+      //对比命令
+      var cmd_input = $("#cmd_input").val();
+      //对比前文件
+      var input1 = $("#input1")[0].files[0];
+      // 对比后文件
+      var input2 = $("#input2")[0].files[0];
+      //排除正则
+      var exclude_pattern_list = $("#hidden_exclude_pattern_list").val();
+      if (title_name.length == 0 || func_mode.length == 0 || output_mode.length == 0 || cmd_input.length == 0 || input1 == undefined || input2 == undefined) {
+        swal(
+          {
+            title: "警告",
+            text: "请填写必填项",
+            type: "error",
+            // timer: 1500
+          })
+      } else {
+        formData.append("title_name", title_name);
+        formData.append("func_mode", func_mode);
+        formData.append("output_mode", output_mode);
+        formData.append("cmd_input", cmd_input);
+        formData.append("input1", input1);
+        formData.append("input2", input2);
+        formData.append("exclude_pattern_list", exclude_pattern_list);
+        $.ajax({
+          type: "POST",
+          url: "{% url 'ConfigCheck' %}",
+          data: formData,
+          processData: false,
+          contentType: false,
+          cache: false,
+          timeout: 100000,
+          success: function (response) {
+            response = JSON.parse(response);  // 临时文件
+            if (response.status.success == true) {
+              swal(
+                {
+                  title: "成功",
+                  text: "提交配置对比成功",
+                  type: "success",
+                  timer: 1500
+                })
+            } else {
+              //如果response.status.success返回的是false 表示后台处理出问题
+              swal(
+                {
+                  title: "提交配置对比失败",
+                  text: response.status.msg,
+                  type: "error",
+                  // timer: 1500
+                })
+            }
+          },
+          error: function (e) {
+            swal(
+              {
+                title: "警告！",
+                text: "服务器加载异常",
+                type: "error",
+                // timer: 1500
+              })
+          }
+        });
+      }
+
+    });
+  });
+
+  //删除行
+  function devareTr(obj) {
+    //   通过this找到父级元素节点
+    var tr = obj.parentNode.parentNode;
+    //找到表格
+    var tbody = tr.parentNode;
+    //删除行
+    tbody.removeChild(tr);
+  }
+
+  //新增行
+  function addNewRow() {
+    var newLine = "          <tr>\n" +
+      "            <td><input type=\"text\" ></td>\n" +
+      "            <td style=\"text-align: center\">\n" +
+      "              <button onclick=\"devareTr(this)\" class=\"btn btn-primary\" >-</button>\n" +
+      "            </td>\n" +
+      "          </tr>\n"
+    $("#currentTr").before(newLine);
+  }
+
+  //增加正则行
+  function addRegularRow(regular_expression) {
+    var newLine = "<tr>\n" +
+      "            <td><input type=\"text\" value=" + regular_expression +
+      "></td>\n" +
+      "            <td style=\"text-align: center\">\n" +
+      "              <button onclick=\"devareTr(this)\" class=\"btn btn-primary\">-</button>\n" +
+      "            </td>\n" +
+      "          </tr>";
+    $("#currentTr").before(newLine);
+  }
+
+</script>
+{% endblock %}
+

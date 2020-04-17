@@ -20,7 +20,16 @@ Mock.mock("{% url 'OnlineSubmitNewProject' %}",{"data":[],"status":{"success":tr
 Mock.mock("{% url 'UpFileSubmitNewProject' %}",{"data":[],"status":{"success":true,"msg":"xxxx"}});
 //获取当前最大的任务id
 Mock.mock("{% url 'AddRequestTaskId' %}",{"data":12,"status":{"success":true,"msg":"xxxx"}});
-Mock.mock('http://www.bai.com',{'name|3':'lz','age|20-60':25});
+
+//保存正则用例
+Mock.mock("{% url 'up_pattern' %}",{"data":[],"status":{"success":true,"msg":"xxxx"}});
+
+//获取正则用例
+Mock.mock("{% url 'down_pattern' %}",{"data":["radius-server host \S+ auth-port \S+ acct-port \S+ key\s+(\S+)", "banner motd (\S+)", "interface GigabitEthernet\S+"],"status":{"success":true,"msg":"xxxx"}});
+
+// 配置对比页面的提交按钮
+Mock.mock("{% url 'ConfigCheck' %}",{"data":[],"status":{"success":true,"msg":"xxxx"}});
+
 Mock.mock('http://www.bai.com',{'name|3':'lz','age|20-60':25});
 Mock.mock('http://www.bai.com',{'name|3':'lz','age|20-60':25});
 Mock.mock('http://www.bai.com',{'name|3':'lz','age|20-60':25});

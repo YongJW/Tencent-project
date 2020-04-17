@@ -218,6 +218,12 @@
 {% block add_other %}
 <script type="text/javascript">
   $(function () {
+    if (location.search.length > 0 && location.search.indexOf("?") > -1 && location.search.indexOf("newproject") > -1) {
+      $(".choose-tasks ul li").removeClass("active");
+      //active 表示鼠标点击后的一个CSS类标签
+      $(".choose-tasks ul li").eq(1).addClass("active");
+      $("#iframe-table").attr("src", "static/project_process/component/template-manager-index-table/new_project.html");
+    }
   });
   Array.prototype.remove = function (val) {
     var index = this.indexOf(val);
