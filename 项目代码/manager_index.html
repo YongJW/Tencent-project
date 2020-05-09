@@ -1,5 +1,5 @@
 {% extends 'index.html' %}
-{# ../../../../all_task_man.html  替换为 {% url 'ProManTaskContents' %}#}
+{# ../../../../   all_task_man.html  替换为 {% url 'ProManTaskContents' %}#}
 <head>
   <meta charset="UTF-8">
   <title>项目经理页</title>
@@ -482,7 +482,7 @@
         contentType: false,
         cache: false,
         timeout: 100000,
-        success: function (response) {
+        success: function (response){
           response = JSON.parse(response);  // 临时文件
           //判断是否返回的是正确状态
           if (response.status.success == true) {
@@ -553,7 +553,7 @@
       "<td title=" + response.data[i].fields.project_serials + "><a  target=\"_parent\" href=\"../../../../all_task_man.html?project_id=" + response.data[i].fields.project_id + "&project_name=" + response.data[i].fields.project_name + "\">" + response.data[i].fields.project_serials + "</a><input type='hidden' value=" + response.data[i].fields.project_id + "></td>" +
       "<td title=" + response.data[i].fields.project_name + ">" + response.data[i].fields.project_name + "</td>" +
       "<td >" + response.data[i].fields.project_type + "</td>" +
-      "<td title=" + response.data[i].fields.project_man_name + ">" + response.data[i].fields.project_man_name + "</td>" +
+      "<td title=" + response.data[i].fields.project_man + ">" + response.data[i].fields.project_man + "</td>" +
       "<td class=\"project-status\">" + response.data[i].fields.project_status + "</td>";
     $("#iframe-table").contents().find("#all_my_projects_table tbody").append(newRow);
   }
@@ -583,6 +583,7 @@
       $("#SearchMemberTable tbody").append(addtr);
     }
   }
+
 
   //绑定“项目编辑”中的按钮
   function bindBtns() {
@@ -814,7 +815,7 @@
             $("#iframe-table").contents().find("#memberInputHidden").val("");
             $("#iframe-table").contents().find("#managerInput").val("");
             $("#iframe-table").contents().find("#membersInput").val("");
-            $("#iframe-table").contents().find("#project_status").val("");
+            $("#iframe-table").contents().find("#project_status").val("进行中");
             //清空用于存放选择人员的Map
             selectedMemberDic = new Array();
             selectedProjectMemberDic = new Array();
@@ -930,7 +931,7 @@
             $("#iframe-table").contents().find("#memberInputHidden  ").val("");
             $("#iframe-table").contents().find("#managerInput").val("");
             $("#iframe-table").contents().find("#membersInput").val("");
-            $("#iframe-table").contents().find("#project_status").val("");
+            $("#iframe-table").contents().find("#project_status").val("进行中");
             //清空上传文件处
             $("#TemplateInputFile").val("");
             //清空用于存放选择人员的数组
