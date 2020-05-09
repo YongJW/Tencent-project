@@ -431,6 +431,7 @@
   function onMyFrameLoad() {
     //当前任务导航文字
     var currentChooseText = $(".choose-tasks .active")[0].innerText;
+    currentChooseText = currentChooseText.replace( /^\s+|\s+$/g, "" );
     if (currentChooseText == "新建项目") {
       //下一步按钮的点击事件
       $("#iframe-table").contents().find("#nextBtn").click(function () {
@@ -482,7 +483,7 @@
         contentType: false,
         cache: false,
         timeout: 100000,
-        success: function (response){
+        success: function (response) {
           response = JSON.parse(response);  // 临时文件
           //判断是否返回的是正确状态
           if (response.status.success == true) {

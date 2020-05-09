@@ -315,7 +315,7 @@
       var cmd_input = $("#cmd_input").val();
       //对比前文件
       var input1 = $("#input1")[0].files[0];
-      var path = getFileURL(input1);
+      // var path = getFileURL(input1);
       // var input1_file_path = $("#input1")[0].value;
       // 对比后文件
       var input2 = $("#input2")[0].files[0];
@@ -393,17 +393,17 @@
     });
   });
 
-  function getFileURL(file) {
-    var getUrl = null;
-    if (window.createObjectURL != undefined) { // basic
-      getUrl = window.createObjectURL(file);
-    } else if (window.URL != undefined) { // mozilla(firefox)
-      getUrl = window.URL.createObjectURL(file);
-    } else if (window.webkitURL != undefined) { // webkit or chrome
-      getUrl = window.webkitURL.createObjectURL(file);
-    }
-    return getUrl;
-  }
+  // function getFileURL(file) {
+  //   var getUrl = null;
+  //   if (window.createObjectURL != undefined) { // basic
+  //     getUrl = window.createObjectURL(file);
+  //   } else if (window.URL != undefined) { // mozilla(firefox)
+  //     getUrl = window.URL.createObjectURL(file);
+  //   } else if (window.webkitURL != undefined) { // webkit or chrome
+  //     getUrl = window.webkitURL.createObjectURL(file);
+  //   }
+  //   return getUrl;
+  // }
 
   //删除行
   function devareTr(obj) {

@@ -117,3 +117,7 @@
   /*//函数计算宽度*/
 }
 
+
+#onlieEditingTable tbody tr{
+  height: 10px;
+}

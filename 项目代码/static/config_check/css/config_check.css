@@ -71,3 +71,7 @@
   position: absolute;
   right: 20%;
 }
+
+#onlieEditingTable tbody tr{
+  height: 10px;
+}
