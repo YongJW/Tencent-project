@@ -24,7 +24,7 @@
   <!--    <input type="hidden" id="project_id" value="123">-->
   <!--  </div>-->
   <div class="below-div">
-    <table class="table">
+    <table class="table" id="main_table">
       <thead>
       <tr>
         <th colspan="2" style="text-align: center">配置对比工具</th>
@@ -35,7 +35,7 @@
         <td><b class="necessary">*</b>标题名称&nbsp;&nbsp;&nbsp;&nbsp;：<input type="text" id="title_name"
                                                                           style="width: 62%">
         </td>
-        <td><b class="necessary">*</b>对比场景：<select id="func_mode" style="width: 45%;height: 25px;">
+        <td><b class="necessary">*</b>对比场景：<select id="func_mode" style="width: 70%;height: 25px;">
           <option value="create">新建项目-核查配置</option>
           <option value="change">配置变更-核查配置</option>
         </select></td>
@@ -43,22 +43,29 @@
       <tr>
         <td><b class="necessary">*</b>对比前文件：<input type="file" id="input1"
                                                    class="manager-admin-input-file" style="display:inline"></td>
-        <td><b class="necessary">*</b>对比命令：<input type="text" id="cmd_input"></td>
+        <td><b class="necessary">*</b>对比命令：<input type="text" id="cmd_input" style="width: 70%"></td>
       </tr>
       <tr>
         <td><b class="necessary">*</b>对比后文件：<input type="file" id="input2"
                                                    class="manager-admin-input-file" style="display:inline"></td>
-        <td class="td-border">&nbsp;排除正则&nbsp;：<input type="text" id="exclude_pattern_list" readonly="readonly"
-                                                      value="当前无正则">
+        <td class="td-border">&nbsp;匹配正则&nbsp;：<select name="" id="pattern_mode" style="width: 30%;height: 25px;">
+          <option value="useful_less">不使用正则匹配</option>
+          <option value="hold_only">仅保留正则匹配配置</option>
+          <option value="delete_only">仅删除正则匹配配置</option>
+          <option value="self_defined">自定义匹配配置(使用"=="隔开正则内容)</option>
+        </select>&nbsp;<input type="text"
+                                                id="exclude_pattern_list"
+                                                readonly="readonly"
+                                                value="当前无正则">
           <input type="hidden" id="hidden_exclude_pattern_list">
         </td>
       </tr>
       <tr>
-        <td><b class="necessary">*</b>输出模式&nbsp;&nbsp;&nbsp;&nbsp;：<select id="output_mode"
-                                                                           style="width: 62%;height: 25px;">
-          <option value="all">整体批量输出(所有设备生成一个html页面)</option>
-          <option value="single">单台批量输出(每台设备生成一个html页面)</option>
-        </select></td>
+        <td id="Configurations_radio"><b class="necessary">*</b>配置顺序&nbsp;&nbsp;&nbsp;&nbsp;：
+          <lable><input name="Configuration_order" type="radio" value="true" checked="checked">&nbsp;标准&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </lable>
+          <lable><input name="Configuration_order" type="radio" value="false">&nbsp;非标准</lable>
+        </td>
         <td>
           <button class="btn btn-primary regular_btn" id="save_regular_btn">保存正则用例</button>
           <button
@@ -115,11 +122,34 @@
           </tr>
           </tbody>
         </table>
+        <button type="button" class="btn btn-primary" id="edit_many_btn">Edit Many</button>
       </div>
       <div class=" div-buttons modal-footer " style="text-align: center">
         <!--        <button type="button" class="btn btn-primary" id="onlineEditingConfirmBtn">提交</button>-->
         <button type="button" class="btn btn-primary" id="onlineEditingClearTable">清除</button>
-        <button type="button" class="btn btn-primary  " data-dismiss="modal">保存</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--edit_many编辑框-->
+<div id="edit_many_plan" class="modal fade bs-" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" align="center" id="SelectMemberTitle">Edit many</h4>
+      </div>
+      <div class="modal-body" id="SearchMeberModal">
+        <textarea rows="15" style="width: 100%;resize: none;" id="regular_textarea">text2</textarea>
+      </div>
+      <div class=" div-buttons modal-footer ">
+        <!--        <button type="button" class="btn btn-primary" id="PassConfirmBtn">&nbsp;通过&nbsp;</button>-->
+        <!--        <button type="button" class="btn btn-primary" id="noPassConfirmBtn">不通过</button>-->
+        <button type="button" class="btn btn-primary  " data-dismiss="modal">&nbsp;关闭&nbsp;</button>
       </div>
     </div>
   </div>
@@ -150,21 +180,9 @@
 
     // 在正则编辑框关闭前，将正则条目数量展示在input框中，将正则列表保存在隐藏域
     $("#regularEditBox").on('hide.bs.modal', function () {
-      var projectTableDate = new Array();
-      $('#onlieEditingTable tbody tr').each(function () {
-        var row = new Array();
-        $(this).find('input').each(function (index, item) {
-          if (item.value.length > 0) {
-            row.push(item.value);
-          }
-        });
-        if (row.length > 0) {
-          projectTableDate.push(row);
-        }
-      });
-      // projectTableDate.pop();
-      projectTableDate = projectTableDate.join(split_str);
-      $("#hidden_exclude_pattern_list").val(projectTableDate);
+      // 将table中的正则放到隐藏域中
+      get_regulay_table_str();
+      var projectTableDate = $("#hidden_exclude_pattern_list").val();
       var regular_len = projectTableDate.length > 0 ? projectTableDate.split(split_str).length : 0;
       if (regular_len > 0) {
         $("#exclude_pattern_list").val("当前有" + regular_len + "条正则");
@@ -309,20 +327,19 @@
       var title_name = $("#title_name").val();
       // 对比场景
       var func_mode = $("#func_mode").val();
-      // 输出模式
-      var output_mode = $("#output_mode").val();
+      // 配置顺序
+      var is_order = $("#Configurations_radio input:radio:checked").val();
       //对比命令
       var cmd_input = $("#cmd_input").val();
       //对比前文件
       var input1 = $("#input1")[0].files[0];
-      // var path = getFileURL(input1);
-      // var input1_file_path = $("#input1")[0].value;
       // 对比后文件
       var input2 = $("#input2")[0].files[0];
-      // var input2_file_path = $("#input2")[0].value;
-      //排除正则
+      //匹配正则的Select
+      var pattern_mode = $("#pattern_mode").val();
+      //匹配正则中的正则表达式
       var exclude_pattern_list = $("#hidden_exclude_pattern_list").val();
-      if (title_name.length == 0 || func_mode.length == 0 || output_mode.length == 0 || cmd_input.length == 0 || input1 == undefined || input2 == undefined) {
+      if (title_name.length == 0 || func_mode.length == 0 || cmd_input.length == 0 || input1 == undefined || input2 == undefined || is_order == undefined) {
         swal(
           {
             title: "警告",
@@ -330,16 +347,39 @@
             type: "error",
             // timer: 1500
           })
+      } else if (pattern_mode == "useful_less" && exclude_pattern_list.length > 0) {
+        swal(
+          {
+            title: "警告",
+            text: "当前正则框不为空，请选择正则匹配类型！",
+            type: "error",
+            // timer: 1500
+          })
+      } else if (pattern_mode != "useful_less" && exclude_pattern_list.length == 0) {
+        swal(
+          {
+            title: "警告",
+            text: "必须填写正则表达式",
+            type: "error",
+            // timer: 1500
+          })
+      } else if (is_order == "false" && pattern_mode != "self_defined") {
+        swal(
+          {
+            title: "警告",
+            text: "当前只有匹配正则为\"自定义匹配配置\"才支持 \"配置顺序非标准\"，请修改输入或联系管理员",
+            type: "error",
+            // timer: 1500
+          })
       } else {
         formData.append("title_name", title_name);
         formData.append("func_mode", func_mode);
-        formData.append("output_mode", output_mode);
+        formData.append("is_order", is_order);
         formData.append("cmd_input", cmd_input);
         formData.append("input1_file_zip", input1);
         formData.append("input2_file_zip", input2);
-        // formData.append("input1_file_path", input2);
-        // formData.append("input2_file_path", input2);
         formData.append("exclude_pattern_str", exclude_pattern_list);
+        formData.append("pattern_mode", pattern_mode);
         $.ajax({
           type: "POST",
           url: "{% url 'ConfigCheck' %}",
@@ -347,7 +387,8 @@
           processData: false,
           contentType: false,
           cache: false,
-          timeout: 100000,
+          dataType: text,
+          timeout: 1000000,
           success: function (response) {
             response = JSON.parse(response);  // 临时文件
             if (response.status.success == true) {
@@ -383,27 +424,65 @@
 
     });
 
-    //文件上传的change事件
-    $("#input1").change(function () {
-      var that = this;
-      console.log(that.files[0]);
-      console.log($("input1").files[0].getAsDataURL());
-      var src = window.URL.createObjectURL(that.files[0]);
-      console.log(src);
+
+    //edit_many按钮点击事件
+    $("#edit_many_btn").click(function () {
+      //打开Edit Many文本框
+      $("#edit_many_plan").modal("show");
+    });
+
+    //打开Edit Many 编辑框之前
+    $("#edit_many_plan").on('show.bs.modal', function () {
+      //清除textarea内容
+      $("#regular_textarea").val("");
+      //获取正则编辑框中table中的正则放到隐藏域中
+      get_regulay_table_str();
+      //将正则表达式通过换行符号连接，赋值给textarea
+      $("#regular_textarea").val($("#hidden_exclude_pattern_list").val().split(split_str).join('\n'));
+    });
+
+    //关闭Edit Many编辑框之前
+    $("#edit_many_plan").on('hide.bs.modal', function () {
+      //用于替换空行
+      var reg = /\n(\n)*( )*(\n)*\n/g;
+      //获取textarea内容
+      var textarea_str = $("#regular_textarea").val().trim().replace(reg, '\n');
+      var textarea_regular = textarea_str.split('\n').join(split_str);
+      $("#hidden_exclude_pattern_list").val(textarea_regular);
+
+      // 每次Edit Many编辑框之前将表格清空，然后重新赋值
+      var tableHtml = "<tr id=\"currentTr\">\n" +
+        "            <td></td>\n" +
+        "            <td style=\"text-align: center\">\n" +
+        "              <button onclick=\"addNewRow()\" class=\"btn btn-primary\">+</button>\n" +
+        "            </td>\n" +
+        "          </tr>";
+      $("#onlieEditingTable tbody").html(tableHtml);
+      $("#regularEditBox").modal("show");
+      var regular_list = $("#hidden_exclude_pattern_list").val().split(split_str);
+      for (var i = 0; i < regular_list.length; i++) {
+        addRegularRow(regular_list[i])
+      }
     });
   });
 
-  // function getFileURL(file) {
-  //   var getUrl = null;
-  //   if (window.createObjectURL != undefined) { // basic
-  //     getUrl = window.createObjectURL(file);
-  //   } else if (window.URL != undefined) { // mozilla(firefox)
-  //     getUrl = window.URL.createObjectURL(file);
-  //   } else if (window.webkitURL != undefined) { // webkit or chrome
-  //     getUrl = window.webkitURL.createObjectURL(file);
-  //   }
-  //   return getUrl;
-  // }
+  //获取正则编辑框中的正则表达式，放到数组中,并通过特殊符号split_str连接然后放到隐藏域hidden_exclude_pattern_list中
+  function get_regulay_table_str() {
+    var projectTableDate = new Array();
+    $('#onlieEditingTable tbody tr').each(function () {
+      var row = new Array();
+      $(this).find('input').each(function (index, item) {
+        if (item.value.length > 0) {
+          row.push(item.value);
+        }
+      });
+      if (row.length > 0) {
+        projectTableDate.push(row);
+      }
+    });
+    projectTableDate = projectTableDate.join(split_str);
+    $("#hidden_exclude_pattern_list").val(projectTableDate);
+  }
 
   //删除行
   function devareTr(obj) {
@@ -430,7 +509,7 @@
   function addRegularRow(regular_expression) {
     var newLine = "<tr>\n" +
       "            <td><input type=\"text\" value=" +
-      "'"+regular_expression +"'"+
+      "'" + regular_expression + "'" +
       "></td>\n" +
       "            <td style=\"text-align: center\">\n" +
       "              <button onclick=\"devareTr(this)\" class=\"btn btn-primary\">-</button>\n" +

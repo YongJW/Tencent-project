@@ -56,8 +56,11 @@
 .regular_btn {
   font-size: 10px;
 }
-
-/*获取正则用例的位置*/
+/*保存正则用例按钮的位置*/
+#save_regular_btn{
+  margin-left: 10%;
+}
+/*获取正则用例按钮的位置*/
 #get_regular_btn {
   margin-left: 13%;
 }
@@ -74,4 +77,13 @@
 
 #onlieEditingTable tbody tr{
   height: 10px;
+}
+
+/*edit_many按钮*/
+#edit_many_btn{
+  margin-left: 80%;
+}
+
+#main_table{
+  table-layout: fixed;
 }
